@@ -1,4 +1,4 @@
-from app.endereco import Endereco
+from app.gerenciamento_estoque.locais.endereco import Endereco
 
 class Porto:
 
