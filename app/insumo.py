@@ -27,7 +27,7 @@ class Insumo(ABC):
 class Defensivo(Insumo):
     """ Classe que representa um defensivo(agrotoxico) agrícola.
         - nome: Nome do defensivo.
-        - valor: Valor do defensivo.
+        - valor: Valor do defensivo por litro.
         - funcao: Função do defensivo (Herbicida, Fungicida, Inseticida ou Acaricida)
     """
     def __init__(self, nome: str, valor: float, funcao: str):
@@ -45,7 +45,7 @@ class Defensivo(Insumo):
 class Fertilizante(Insumo):
     """ Classe que representa um fertilizante.
         - nome: Nome do fertilizante.
-        - valor: Valor do fertilizante.
+        - valor: Valor do fertilizante por KG.
         - fonte: Fonte do fertilizante (Organico ou Quimico).
     """
     def __init__(self, nome: str, valor: float, fonte: str):
@@ -61,9 +61,9 @@ class Fertilizante(Insumo):
         self.__fonte = fonte
 
 class Implemento(Insumo):
-    """ Classe que representa um implemento agrícola. 
+    """ Classe que representa um implemento agrícola.
         - nome: Nome do implemento.
-        - valor: Valor do implemento.
+        - valor: Valor do implemento por hequitare.
         - processo: Processo do implemento (Pantio ou Colheita).
         - tipo: Tipo do implemento (Manual ou Mecanico)
     """
@@ -91,7 +91,7 @@ class Implemento(Insumo):
 class Semente(Insumo):
     """ Classe que representa uma semente agrícola.
         - nome: Nome do semente.
-        - valor: Valor do semente.
+        - valor: Valor do semente por KG
         - cultura: Cultura do semente (Soja, Milho, Trigo ou Algodão)
         - tecnologia: Tecnologia do semente (Transgenica ou Nao Transgenica)
     """
