@@ -32,7 +32,7 @@ class Defensivo(Insumo):
     """
     def __init__(self, nome: str, valor: float, funcao: str):
         super().__init__(nome, valor)
-        self.__tipo = funcao
+        self.__funcao = funcao
 
     @property
     def funcao(self) -> str:
