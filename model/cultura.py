@@ -2,16 +2,17 @@ class Cultura:
     """
     Classe que representa uma cultura agrícola.
     - nome: Nome da cultura.
-    - quant_semente: Quantidade de semente necessária para a cultura em kg/ha.
+    - dose_semente: Quantidade de semente necessária para a cultura em kg/ha.
     - dose_fertilizante: Dose de fertilizante necessária para a cultura em kg/ha.
     - dose_defensivo: Dose de defensivo necessária para a cultura em l/ha.
     - temp_crescimento: Tempo de crescimento da cultura em meses.
     - num_aplicacao: Numero de aplicacoes de defensivo e fertilizante durante o ciclo da cultura.
     """
-    def __init__(self, nome: str, quant_semente: float, dose_fertilizante: float,
+    def __init__(self, nome: str, id: int, dose_semente: float, dose_fertilizante: float,
                  dose_defensivo: float, temp_crescimento: int, num_aplicacao: int) -> None:
         self.__nome = nome
-        self.__quant_semente = quant_semente
+        self.__id = id
+        self.__dose_semente = dose_semente
         self.__dose_fertilizante = dose_fertilizante
         self.__dose_defensivo = dose_defensivo
         self.__temp_crescimento = temp_crescimento
@@ -26,12 +27,20 @@ class Cultura:
         self.__nome = nome
 
     @property
-    def quant_semente(self):
-        return self.__quant_semente
+    def id(self):
+        return self.__id
 
-    @quant_semente.setter
-    def quant_semente(self, quant_semente: float) -> None:
-        self.__quant_semente = quant_semente
+    @id.setter
+    def id(self, id: int) -> None:
+        self.__id = id
+
+    @property
+    def dose_semente(self):
+        return self.__dose_semente
+
+    @dose_semente.setter
+    def dose_semente(self, dose_semente: float) -> None:
+        self.__dose_semente = dose_semente
 
     @property
     def dose_fertilizante(self):
