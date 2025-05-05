@@ -1,6 +1,6 @@
-from app.insumo import Semente, Fertilizante, Defensivo
-from app.cultura import Cultura
-from app.calculo_dose import CalculoDose
+from insumo import Semente, Fertilizante, Defensivo
+from cultura import Cultura
+from calculo_dose import CalculoDose
 
 # Sementes
 sem1 = Semente(nome='Certificada RR', valor=100, cultura='Soja', tecnologia='Não Transgenica')

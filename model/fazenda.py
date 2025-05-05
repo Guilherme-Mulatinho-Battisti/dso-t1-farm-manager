@@ -1,4 +1,4 @@
-from app.locais.endereco import Endereco
+from locais.endereco import Endereco
 
 
 class Fazenda:

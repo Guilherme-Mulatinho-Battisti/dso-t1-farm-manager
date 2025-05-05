@@ -1,4 +1,4 @@
-# from app.insumo import Defensivo, Fertilizante, Implemento, Semente
+# from insumo import Defensivo, Fertilizante, Implemento, Semente
 
 # abamex = Defensivo('Abamex', 100.0, 'Inseticida')
 # npk = Fertilizante('NPK', 200.0, 'Organico')
@@ -6,7 +6,7 @@
 # sementes = Semente('Sementes', 150.0, 'Milho')
 
 
-from app.view.view_insumo import menu_insumos
+from view.view_insumo import menu_insumos
 
 if __name__ == "__main__":
     menu_insumos()
