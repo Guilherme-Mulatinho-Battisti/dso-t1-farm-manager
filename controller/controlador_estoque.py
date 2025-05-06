@@ -29,24 +29,20 @@ class ControladorCultura():
         self.__culturas.append(nova_cultura)
 
     def alterar_cultura(self):
-        self.listar_culturas()
+        self.lista_culturas()
         id_cultura = self.__tela_cultura.seleciona_cultura()
         cultura = self.pega_cultura_por_id(id_cultura)
 
         if (cultura is not None):
             novos_dados_cultura = self.__tela_cultura.pega_dados_cultura()
             cultura.nome = novos_dados_cultura["nome"]
+            cultura.telefone = novos_dados_cultura["telefone"]
             cultura.id = novos_dados_cultura["id"]
-            cultura.dose_semente = novos_dados_cultura["dose_semente"]
-            cultura.dose_fertilizante = novos_dados_cultura["dose_fertilizante"]
-            cultura.dose_defensivo = novos_dados_cultura["dose_defensivo"]
-            cultura.temp_crescimento = novos_dados_cultura["temp_crescimento"]
-            cultura.num_aplicacao = novos_dados_cultura["num_aplicacao"]
-            self.listar_culturas()
+            self.lista_culturas()
         else:
             self.__tela_cultura.mostra_mensagem("ATENCAO: cultura não existente")
 
-    def listar_culturas(self):
+    def lista_culturas(self):
         if len(self.__culturas) == 0:
             self.__tela_cultura.mostra_mensagem("ATENCAO: lista de culturas vazia")
             return
@@ -60,13 +56,13 @@ class ControladorCultura():
                                                 "num_aplicacao": cultura.num_aplicacao})
 
     def excluir_cultura(self):
-        self.listar_culturas()
+        self.lista_culturas()
         id_cultura = self.__tela_cultura.seleciona_cultura()
         cultura = self.pega_cultura_por_id(id_cultura)
 
         if (cultura is not None):
             self.__culturas.remove(cultura)
-            self.listar_culturas()
+            self.lista_culturas()
         else:
             self.__tela_cultura.mostra_mensagem("ATENCAO: cultura não existente")
 
@@ -75,7 +71,7 @@ class ControladorCultura():
 
     def abre_tela(self):
         lista_opcoes = {1: self.incluir_cultura, 2: self.alterar_cultura,
-                        3: self.listar_culturas, 4: self.excluir_cultura,
+                        3: self.lista_culturas, 4: self.excluir_cultura,
                         0: self.retornar}
 
         continua = True

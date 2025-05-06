@@ -1,7 +1,6 @@
-from gerenciamento_estoque.locais.endereco import Endereco
+from model.endereco import Endereco
 
 class Porto:
-
     def __init__(self, pais: str, estado: str, cidade: str, nome: str, produtos_disponiveis: list) -> None:
         self.__endereco = Endereco(pais, estado, cidade)
         self.__nome = nome

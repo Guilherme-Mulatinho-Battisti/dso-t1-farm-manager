@@ -1,29 +1,47 @@
-from controller.controlador_insumo import ControladorInsumo
-from model.insumo import DefensInsumoivo
+class TelaInsumo():
+    # fazer aqui tratamento dos dados, caso a entrada seja diferente do esperado
+    def tela_opcoes(self):
+        print("-------- INSUMOS ----------")
+        print("Escolha a opcao")
+        print("1 - Incluir Insumo")
+        print("2 - Alterar Insumo")
+        print("3 - Listar Insumo")
+        print("4 - Excluir Insumo")
+        print("0 - Retornar")
 
-  def tela_opcoes(self):
-    print("-------- LIVROS ----------")
-    print("Escolha a opcao")
-    print("1 - Incluir Livro")
-    print("2 - Alterar Livro")
-    print("3 - Listar Livro")
-    print("4 - Excluir Livro")
-    print("0 - Retornar")
+        opcao = int(input("Escolha a opcao: "))
+        return opcao
 
-    opcao = int(input("Escolha a opcao: "))
-    return opcao
+    def tela_opcoes_insumos(self):
+        print("-------- INSUMOS ----------")
+        print("Escolha a opcao")
+        print("1 - Fertilizante")
+        print("2 - Defensivo")
+        print("3 - Semente")
+        print("4 - Implemento")
+        print("0 - Retornar")
 
-def menu_insumos():
-    ctrl = ControladorInsumo()
+        opcao = int(input("Escolha a opcao: "))
+        return opcao
 
-    print("Cadastro de Defensivo")
-    nome = input("Nome: ")
-    valor = float(input("Valor por litro: "))
-    funcao = input("Função (Herbicida, Fungicida, etc): ")
+    #fazer aqui tratamento dos dados, caso a entrada seja diferente do esperado
+    def pega_dados_insumo(self):
+        print("-------- DADOS LIVRO ----------")
+        titulo = input("Titulo: ")
+        codigo = input("Codigo: ")
 
-    defensivo = Defensivo(nome, valor, funcao)
-    ctrl.adicionar_insumo(defensivo)
+        return {"titulo": titulo, "codigo": codigo}
 
-    print("\nInsumos cadastrados:")
-    for insumo in ctrl.listar_insumos():
-        print(f"- {insumo.nome}: R$ {insumo.valor} ({insumo.funcao})")
+    # fazer aqui tratamento dos dados, caso a entrada seja diferente do esperado
+    def mostra_insumo(self, dados_insumo):
+        print("TITULO DO LIVRO: ", dados_insumo["titulo"])
+        print("CODIGO DO LIVRO: ", dados_insumo["codigo"])
+        print("\n")
+
+    #fazer aqui tratamento dos dados, caso a entrada seja diferente do esperado
+    def seleciona_insumo(self):
+        codigo = input("Código do insumo que deseja selecionar: ")
+        return codigo
+
+    def mostra_mensagem(self, msg):
+        print(msg)

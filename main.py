@@ -6,7 +6,13 @@
 # sementes = Semente('Sementes', 150.0, 'Milho')
 
 
-from view.view_insumo import menu_insumos
+# from view.view_insumo import menu_insumos
+
+# if __name__ == "__main__":
+#     menu_insumos()
+
+
+from controller.controlador_sistema import ControladorSistema
 
 if __name__ == "__main__":
-    menu_insumos()
+    ControladorSistema().inicializa_sistema()

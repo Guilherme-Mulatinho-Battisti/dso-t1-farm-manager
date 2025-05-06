@@ -1,7 +1,7 @@
 from view.tela_insumo import TelaInsumo
 from model.insumo import Insumo
 
-class ControladorInsumos():
+class ControladorInsumo():
     # Fazer lançamento e tratamento de exceções, ao invés de apenas mostrar mensagem na tela.
     def __init__(self, controlador_sistema):
         self.__livros = []
