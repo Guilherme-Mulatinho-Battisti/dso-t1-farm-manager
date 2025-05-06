@@ -13,6 +13,7 @@ class ControladorCultura():
             if (cultura.id == id):
                 return cultura
         return None
+    # TODO Testar unidades / informar mensagem
 
     def incluir_cultura(self):
         dados_cultura = self.__tela_cultura.pega_dados_cultura()
