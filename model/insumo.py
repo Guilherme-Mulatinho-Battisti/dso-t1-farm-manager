@@ -3,8 +3,9 @@ from abc import ABC, abstractmethod
 class Insumo(ABC):
 
     @abstractmethod
-    def __init__(self, nome: str, valor: float):
+    def __init__(self, nome: str, id: int, valor: float):
         self.__nome = nome
+        self.__id = id
         self.__valor = valor
 
     @property
@@ -14,6 +15,14 @@ class Insumo(ABC):
     @nome.setter
     def nome(self, nome: str) -> None:
         self.__nome = nome
+
+    @property
+    def id(self) -> str:
+        return self.__id
+
+    @id.setter
+    def id(self, id: str) -> None:
+        self.__id = id
 
     @property
     def valor(self) -> float:
@@ -27,11 +36,12 @@ class Insumo(ABC):
 class Defensivo(Insumo):
     """ Classe que representa um defensivo(agrotoxico) agrícola.
         - nome: Nome do defensivo.
+        - id: Identificador único do defensivo.
         - valor: Valor do defensivo por litro.
         - funcao: Função do defensivo (Herbicida, Fungicida, Inseticida ou Acaricida)
     """
-    def __init__(self, nome: str, valor: float, funcao: str):
-        super().__init__(nome, valor)
+    def __init__(self, nome: str, id: int, valor: float, funcao: str):
+        super().__init__(nome, id, valor)
         self.__funcao = funcao
 
     @property
@@ -45,11 +55,12 @@ class Defensivo(Insumo):
 class Fertilizante(Insumo):
     """ Classe que representa um fertilizante.
         - nome: Nome do fertilizante.
+        - id: Identificador único do defensivo.
         - valor: Valor do fertilizante por KG.
         - fonte: Fonte do fertilizante (Organico ou Quimico).
     """
-    def __init__(self, nome: str, valor: float, fonte: str):
-        super().__init__(nome, valor)
+    def __init__(self, nome: str, id: int, valor: float, fonte: str):
+        super().__init__(nome, id, valor)
         self.__fonte = fonte
 
     @property
@@ -63,12 +74,13 @@ class Fertilizante(Insumo):
 class Implemento(Insumo):
     """ Classe que representa um implemento agrícola.
         - nome: Nome do implemento.
+        - id: Identificador único do defensivo.
         - valor: Valor do implemento por hequitare.
         - processo: Processo do implemento (Pantio ou Colheita).
         - tipo: Tipo do implemento (Manual ou Mecanico)
     """
-    def __init__(self, nome: str, valor: float, processo: str, tipo: str):
-        super().__init__(nome, valor)
+    def __init__(self, nome: str, id: int, valor: float, processo: str, tipo: str):
+        super().__init__(nome, id, valor)
         self.__processo = processo
         self.__tipo = tipo
 
@@ -91,12 +103,13 @@ class Implemento(Insumo):
 class Semente(Insumo):
     """ Classe que representa uma semente agrícola.
         - nome: Nome do semente.
+        - id: Identificador único do defensivo.
         - valor: Valor do semente por KG
         - cultura: Cultura do semente (Soja, Milho, Trigo ou Algodão)
         - tecnologia: Tecnologia do semente (Transgenica ou Nao Transgenica)
     """
-    def __init__(self, nome: str, valor: float, cultura: str, tecnologia: str):
-        super().__init__(nome, valor)
+    def __init__(self, nome: str, id: int, valor: float, cultura: str, tecnologia: str):
+        super().__init__(nome, id, valor)
         self.__cultura = cultura
         self.__tecnologia = tecnologia
 
