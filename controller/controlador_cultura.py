@@ -5,8 +5,20 @@ class ControladorCultura():
 
     def __init__(self, controlador_sistema):
         self.__culturas = []
-        self.__tela_cultura = TelaCultura()
         self.__controlador_sistema = controlador_sistema
+        self.__tela_cultura = TelaCultura()
+        self.carrega_dados()
+
+    def carrega_dados(self):
+        """ Método para carregar dados de culturas pré-definidas. """
+        self.__culturas.append(Cultura(nome='Soja', id=1, dose_semente=0.8, dose_fertilizante=40,
+                                       dose_defensivo=30, temp_crescimento=8, num_aplicacao=1))
+        self.__culturas.append(Cultura(nome='Milho', id=2, dose_semente=2, dose_fertilizante=30,
+                                       dose_defensivo=50, temp_crescimento=10, num_aplicacao=2))
+        self.__culturas.append(Cultura(nome='Trigo', id=3, dose_semente=0.5, dose_fertilizante=22,
+                                       dose_defensivo=34, temp_crescimento=8, num_aplicacao=1))
+        self.__culturas.append(Cultura(nome='Algodao', id=4, dose_semente=1.2, dose_fertilizante=60,
+                                       dose_defensivo=36, temp_crescimento=8, num_aplicacao=1))
 
     def pega_cultura_por_id(self, id: int):
         for cultura in self.__culturas:

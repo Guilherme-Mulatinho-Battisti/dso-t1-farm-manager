@@ -1,5 +1,6 @@
 class TelaInsumo():
     def tela_opcoes(self):
+        print("\n")
         while True:
             print("-------- INSUMOS ----------")
             print("Escolha a opcao")
@@ -22,6 +23,7 @@ class TelaInsumo():
                 print("Entrada inválida. Digite apenas números.\n")
 
     def tela_opcoes_insumos(self):
+        print("\n")
         while True:
             print("-------- TIPOS DE INSUMO ----------")
             print("1 - Fertilizante")
@@ -50,16 +52,26 @@ class TelaInsumo():
             print("Nome não pode ser vazio.")
 
         while True:
-            id = input("Id: ").strip()
-            if id:
-                break
-            print("Id não pode ser vazio.")
+            id = input("ID: ").strip()
+            if not id:
+                print("Id não pode ser vazio.")
+                continue
+            if not id.isdigit():
+                print("Id deve ser um número inteiro.")
+                continue
+            id = int(id)
+            break
 
         while True:
             valor = input("Valor: ").strip()
-            if valor:
-                break
-            print("Id não pode ser vazio.")
+            if not valor:
+                print("Valor não pode ser vazio.")
+                continue
+            if not isinstance(valor, (int, float)):
+                print("Valor deve ser um número float.")
+                continue
+            valor = float(valor)
+            break
 
         # FERTILIZANTES
         if tipo_insumo == 1:
@@ -107,16 +119,20 @@ class TelaInsumo():
                 print("Tipo não pode ser vazio.")
             return {"nome": nome, "id": id, "valor": valor, "processo": processo, "tipo": tipo}
 
-    # fazer aqui tratamento dos dados, caso a entrada seja diferente do esperado
-    def mostra_insumo(self, dados_insumo):
-        print("TITULO DO INSUMO: ", dados_insumo["nome"])
-        print("CODIGO DO INSUMO: ", dados_insumo["id"])
-        print("\n")
+    def mostra_insumo(self, dados_insumo: dict):
+        for key, value in dados_insumo.items():
+            print(f"{key.upper()}: {value}")
 
-    # fazer aqui tratamento dos dados, caso a entrada seja diferente do esperado
     def seleciona_insumo(self):
-        id = input("Código do insumo que deseja selecionar: ")
-        return id
+        while True:
+            entrada = input("Código do insumo que deseja selecionar: ").strip()
+            if not entrada:
+                print("Id não pode ser vazio.")
+                continue
+            if not entrada.isdigit():
+                print("Id deve ser um número inteiro.")
+                continue
+            return int(entrada)
 
     def mostra_mensagem(self, msg):
         print(msg)

@@ -4,12 +4,12 @@ class Cultura:
     - nome: Nome da cultura.
     - dose_semente: Quantidade de semente necessária para a cultura em kg/ha.
     - dose_fertilizante: Dose de fertilizante necessária para a cultura em kg/ha.
-    - dose_defensivo: Dose de defensivo necessária para a cultura em l/ha.
+    - dose_defensivo: DIct com Dose de defensivo por categoria necessária para a cultura em l/ha.
     - temp_crescimento: Tempo de crescimento da cultura em meses.
     - num_aplicacao: Numero de aplicacoes de defensivo e fertilizante durante o ciclo da cultura.
     """
     def __init__(self, nome: str, id: int, dose_semente: float, dose_fertilizante: float,
-                 dose_defensivo: float, temp_crescimento: int, num_aplicacao: int) -> None:
+                 dose_defensivo: dict, temp_crescimento: int, num_aplicacao: int) -> None:
         self.__nome = nome
         self.__id = id
         self.__dose_semente = dose_semente
@@ -55,7 +55,7 @@ class Cultura:
         return self.__dose_defensivo
 
     @dose_defensivo.setter
-    def dose_defensivo(self, dose_defensivo: float) -> None:
+    def dose_defensivo(self, dose_defensivo: dict) -> None:
         self.__dose_defensivo = dose_defensivo
 
     @property

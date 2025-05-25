@@ -9,7 +9,6 @@ class Fazenda:
         - nome: Nome da fazenda.
         - area_plantada: Area de planttacao da fazenda
     """
-    # TODO Criar uma classa para definir a area plantada?
 
     def __init__(self, pais: str, estado: str, cidade: str, nome: str, cultura: Cultura, area_plantada: list) -> None:
         self.__endereco = Endereco(pais, estado, cidade)
@@ -32,3 +31,19 @@ class Fazenda:
     @nome.setter
     def nome(self, nome: str) -> None:
         self.__nome = nome
+
+    @property
+    def cultura(self) -> str:
+        return self.__cultura
+
+    @cultura.setter
+    def cultura(self, cultura: str) -> None:
+        self.__cultura = cultura
+
+    @property
+    def area_plantada(self) -> str:
+        return self.__area_plantada
+
+    @area_plantada.setter
+    def area_plantada(self, area_plantada: int) -> None:
+        self.__area_plantada = area_plantada

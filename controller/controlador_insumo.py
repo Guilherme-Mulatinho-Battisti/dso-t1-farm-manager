@@ -7,6 +7,26 @@ class ControladorInsumo():
         self.__insumos = []
         self.__controlador_sistema = controlador_sistema
         self.__tela_insumo = TelaInsumo()
+        self.carrega_dados()
+
+    def carrega_dados(self):
+        # Sementes
+        self.__insumos.append(Semente(nome='Certificada RR', id=101, valor=100, cultura='Soja', tecnologia='Não Transgenica'))
+        self.__insumos.append(Semente(nome='VT Pro 2', id=102, valor=120, cultura='Milho', tecnologia='Transgenica'))
+
+        # Fertilizantes
+        self.__insumos.append(Fertilizante(nome='NPK', id=201, valor=1000, fonte='Quimico'))
+        self.__insumos.append(Fertilizante(nome='composto_organico', id=202, valor=400, fonte='Organico'))
+
+        # Defensivos
+        self.__insumos.append(Defensivo(nome='Abamex', id=301, valor=500, funcao='Herbicida'))
+        self.__insumos.append(Defensivo(nome='Star', id=302, valor=700, funcao='Inseticida'))
+        self.__insumos.append(Defensivo(nome='Engeo', id=303, valor=600, funcao='Fungicida'))
+        self.__insumos.append(Defensivo(nome='Deca', id=304, valor=600, funcao='Acaricida'))
+
+        # Implementos
+        self.__insumos.append(Implemento(nome='Arado', id=401, valor=1500, processo="Plantio", tipo='Mecanico'))
+        self.__insumos.append(Implemento(nome='Grade', id=402, valor=1200, processo="Colheita", tipo='Manual'))
 
     def __retorna_tipo_insumo(self, insumo) -> int:
         if isinstance(insumo, Fertilizante):
@@ -23,7 +43,7 @@ class ControladorInsumo():
 
     def pega_insumo_por_id(self, id: int):
         for insumo in self.__insumos:
-            if (insumo.id == id):
+            if (int(insumo.id) == int(id)):
                 return insumo
         return None
 
@@ -55,7 +75,10 @@ class ControladorInsumo():
             self.__tela_insumo.mostra_mensagem("ATENCAO: Insumo já existente")
 
     def alterar_insumo(self):
-        self.lista_insumo()
+        lst_insumo = self.lista_insumo()
+        if not lst_insumo:
+            return
+
         id_insumo = self.__tela_insumo.seleciona_insumo()
         insumo = self.pega_insumo_por_id(id_insumo)
 
@@ -84,6 +107,7 @@ class ControladorInsumo():
     def lista_insumo(self):
         if not self.__insumos:
             self.__tela_insumo.mostra_mensagem("ATENCAO: Lista de insumos vazia")
+            self.__tela_insumo.mostra_mensagem("\n")
             return
 
         for insumo in self.__insumos:
@@ -105,7 +129,8 @@ class ControladorInsumo():
                 dados["processo"] = insumo.processo
                 dados["tipo"] = insumo.tipo
 
-        self.__tela_insumo.mostra_insumo(dados)
+            self.__tela_insumo.mostra_insumo(dados)
+            self.__tela_insumo.mostra_mensagem("\n")
 
     def excluir_insumo(self):
         self.lista_insumo()
@@ -117,6 +142,7 @@ class ControladorInsumo():
             self.lista_insumo()
         else:
             self.__tela_insumo.mostra_mensagem("ATENCAO: Insumo não existente")
+            self.__tela_insumo.mostra_mensagem("\n")
 
     def retornar(self):
         self.__controlador_sistema.abre_tela()
