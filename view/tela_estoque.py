@@ -4,7 +4,7 @@ class TelaEstoque():
         print("Escolha a opcao")
         print("1 - Adicionar Produto ao Estoque")
         print("2 - Remover Produto do Estoque")
-        print("3 - Listar Produtos no Estoque")
+        print("3 - Mostrar Produtos no Estoque")
         print("4 - Alterar Estoque")
         print("5 - Limpar Estoque")
         print("0 - Retornar")
@@ -14,7 +14,11 @@ class TelaEstoque():
 
     def mostra_estoque(self, estoque: dict):
         print("\nProdutos no estoque:")
-        for produto, quantidade in estoque.items():
+        print(f"ID do Estoque: {estoque['id']}")
+        if not estoque['estoque']:
+            print("Estoque vazio.")
+            return
+        for produto, quantidade in estoque['estoque'].items():
             print(f"- Produto: {produto} | Quantidade: {quantidade}")
         print("\n")
 

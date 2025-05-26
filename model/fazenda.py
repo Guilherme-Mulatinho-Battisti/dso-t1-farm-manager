@@ -61,7 +61,7 @@ class Fazenda:
         self.__area_plantada = area_plantada
 
     @property
-    def estoque(self) -> str:
+    def estoque(self) -> Estoque:
         return self.__estoque
 
     @estoque.setter

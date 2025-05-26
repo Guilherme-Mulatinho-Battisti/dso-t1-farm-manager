@@ -23,11 +23,14 @@ class TelaFazenda():
             print("-------- GERENCIADOR DE FAZENDA ----------")
             print("1 - Gerenciar Estoque")
             print("2 - Alterar Cultura")
+            print("3 - Plantar")
+            print("4 - Colher")
+            print("5 - Aplicar Insumo")
             print("0 - Retornar")
 
             try:
                 opcao = int(input("Escolha a opção: "))
-                if opcao in [0, 1, 2]:
+                if opcao in [0, 1, 2, 3, 4, 5]:
                     return opcao
                 else:
                     print("Opção fora do intervalo. Tente novamente.")

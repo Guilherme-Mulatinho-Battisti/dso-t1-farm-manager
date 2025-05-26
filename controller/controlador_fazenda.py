@@ -104,6 +104,7 @@ class ControladorFazenda():
                                                 "cultura": fazenda.cultura.nome,
                                                 "area_plantada": fazenda.area_plantada,
                                                 "estoque": fazenda.estoque.estoque})
+        return self.__fazendas
 
     def excluir_fazenda(self):
         list_fazenda = self.lista_fazendas()
@@ -127,9 +128,10 @@ class ControladorFazenda():
             continua = True
             while continua:
                 opcao = self.__tela_fazenda.tela_gerenciador_fazenda()
-
+                # Gerenciar estoque
                 if opcao == 1:
-                    self.__controlador_sistema.controlador_estoque.gerenciar_estoque(fazenda.estoque)
+                    self.__controlador_sistema.controlador_estoque.abre_tela(fazenda.estoque)
+                # Alterar cultura
                 elif opcao == 2:
                     self.__tela_fazenda.mostra_mensagem("SELECIONE UMA NOVA CULTURA DIGITANDO O ID:")
                     self.__controlador_sistema.controlador_cultura.listar_culturas()
@@ -139,6 +141,16 @@ class ControladorFazenda():
                         self.__tela_fazenda.mostra_mensagem("Cultura alterada com sucesso!")
                     else:
                         self.__tela_fazenda.mostra_mensagem("Cultura não encontrada.")
+                #  Plantar
+                elif opcao == 3:
+                    self.__controlador_sistema.controlador_operador.plantar()
+                # colher
+                elif opcao == 4:
+                    self.__controlador_sistema.controlador_operador.colher()
+                # aplicar insumo
+                elif opcao == 5:
+                    self.__controlador_sistema.controlador_operador.aplicar_insumo()
+                # retornar
                 elif opcao == 0:
                     continua = False
                 else:

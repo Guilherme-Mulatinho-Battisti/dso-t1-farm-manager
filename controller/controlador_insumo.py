@@ -8,6 +8,9 @@ class ControladorInsumo():
         self.__tela_insumo = TelaInsumo()
         self.carrega_dados()
 
+    def retorna_insumos(self):
+        return self.__insumos
+
     def carrega_dados(self):
         # Sementes
         self.__insumos.append(Semente(nome='Certificada RR', id=101, valor=100, cultura='Soja', tecnologia='Não Transgenica'))

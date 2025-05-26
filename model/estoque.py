@@ -3,7 +3,8 @@ class Estoque:
         - estoque: dict do tipo {produto: quantidade}"""
     def __init__(self, id: int, estoque: dict = {}):
         self.id = id
-        self.estoque = estoque  # 
+        self.estoque = estoque
+        self.log = []
 
     def adicionar_produto(self, produto, quantidade=1):
         if produto in self.estoque:

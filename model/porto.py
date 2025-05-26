@@ -1,10 +1,12 @@
 from model.endereco import Endereco
+from model.estoque import Estoque
+
 
 class Porto:
-    def __init__(self, pais: str, estado: str, cidade: str, nome: str, produtos_disponiveis: list) -> None:
+    def __init__(self, pais: str, estado: str, cidade: str, nome: str, estoque: Estoque) -> None:
         self.__endereco = Endereco(pais, estado, cidade)
         self.__nome = nome
-        self.__produtos_disponiveis = produtos_disponiveis
+        self.__estoque = estoque
 
     @property
     def endereco(self) -> str:
@@ -23,9 +25,9 @@ class Porto:
         self.__nome = nome
 
     @property
-    def produtos_disponiveis(self) -> list:
-        return self.__produtos_disponiveis
+    def estoque(self) -> Estoque:
+        return self.__estoque
 
-    @produtos_disponiveis.setter
-    def produtos_disponiveis(self, produtos_disponiveis: list) -> None:
-        self.__produtos_disponiveis = produtos_disponiveis
+    @estoque.setter
+    def estoque(self, estoque: Estoque) -> None:
+        self.__estoque = estoque
