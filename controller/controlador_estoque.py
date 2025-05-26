@@ -1,79 +1,60 @@
-from view.tela_cultura import TelaCultura
-from model.cultura import Cultura
+from view.tela_estoque import TelaEstoque
+from model.estoque import Estoque
 
-class ControladorCultura():
+class ControladorEstoque():
 
     def __init__(self, controlador_sistema):
-        self.__culturas = []
-        self.__tela_cultura = TelaCultura()
+        self.__estoques = []
+        self.__tela_estoque = TelaEstoque()
         self.__controlador_sistema = controlador_sistema
 
-    def pega_cultura_por_id(self, id: int):
-        for cultura in self.__culturas:
-            if (cultura.id == id):
-                return cultura
-        return None
+    def alterar_estoque(self):
+        self.lista_estoques()
+        id_estoque = self.__tela_estoque.seleciona_estoque()
+        estoque = self.pega_estoque_por_id(id_estoque)
 
-    def incluir_cultura(self):
-        dados_cultura = self.__tela_cultura.pega_dados_cultura()
-        for cultura in self.__culturas:
-            if cultura.id == dados_cultura["id"]:
-                self.__tela_cultura.mostra_mensagem("ATENÇÃO: Cultura com esse ID já existe.")
-                return
-
-        nova_cultura = Cultura(
-            dados_cultura["nome"], dados_cultura["id"], dados_cultura["dose_semente"],
-            dados_cultura["dose_fertilizante"], dados_cultura["dose_defensivo"],
-            dados_cultura["temp_crescimento"], dados_cultura["num_aplicacao"]
-        )
-        self.__culturas.append(nova_cultura)
-
-    def alterar_cultura(self):
-        self.lista_culturas()
-        id_cultura = self.__tela_cultura.seleciona_cultura()
-        cultura = self.pega_cultura_por_id(id_cultura)
-
-        if (cultura is not None):
-            novos_dados_cultura = self.__tela_cultura.pega_dados_cultura()
-            cultura.nome = novos_dados_cultura["nome"]
-            cultura.telefone = novos_dados_cultura["telefone"]
-            cultura.id = novos_dados_cultura["id"]
-            self.lista_culturas()
+        if (estoque is not None):
+            novos_dados_estoque = self.__tela_estoque.pega_dados_estoque()
+            estoque.nome = novos_dados_estoque["nome"]
+            estoque.telefone = novos_dados_estoque["telefone"]
+            estoque.id = novos_dados_estoque["id"]
+            self.lista_estoques()
         else:
-            self.__tela_cultura.mostra_mensagem("ATENCAO: cultura não existente")
+            self.__tela_estoque.mostra_mensagem("ATENCAO: estoque não existente")
 
-    def lista_culturas(self):
-        if len(self.__culturas) == 0:
-            self.__tela_cultura.mostra_mensagem("ATENCAO: lista de culturas vazia")
+    def lista_estoques(self):
+        if len(self.__estoques) == 0:
+            self.__tela_estoque.mostra_mensagem("ATENCAO: lista de estoques vazia")
             return
 
-        for cultura in self.__culturas:
-            self.__tela_cultura.mostra_cultura({"nome": cultura.nome, "id": cultura.id,
-                                                "dose_semente": cultura.dose_semente,
-                                                "dose_fertilizante": cultura.dose_fertilizante,
-                                                "dose_defensivo": cultura.dose_defensivo,
-                                                "temp_crescimento": cultura.temp_crescimento,
-                                                "num_aplicacao": cultura.num_aplicacao})
+        for estoque in self.__estoques:
+            self.__tela_estoque.mostra_estoque({"nome": estoque.nome, "id": estoque.id,
+                                                "dose_semente": estoque.dose_semente,
+                                                "dose_fertilizante": estoque.dose_fertilizante,
+                                                "dose_defensivo": estoque.dose_defensivo,
+                                                "temp_crescimento": estoque.temp_crescimento,
+                                                "num_aplicacao": estoque.num_aplicacao})
 
-    def excluir_cultura(self):
-        self.lista_culturas()
-        id_cultura = self.__tela_cultura.seleciona_cultura()
-        cultura = self.pega_cultura_por_id(id_cultura)
+    def limpar_estoque(self):
+        self.lista_estoques()
+        id_estoque = self.__tela_estoque.seleciona_estoque()
+        estoque = self.pega_estoque_por_id(id_estoque)
 
-        if (cultura is not None):
-            self.__culturas.remove(cultura)
-            self.lista_culturas()
+        if estoque is not None:
+            estoque.estoque.clear()  # esvazia o dicionário de produtos
+            self.__tela_estoque.mostra_mensagem("Estoque limpo com sucesso.")
+            self.lista_estoques()
         else:
-            self.__tela_cultura.mostra_mensagem("ATENCAO: cultura não existente")
+            self.__tela_estoque.mostra_mensagem("ATENÇÃO: estoque não existente.")
 
     def retornar(self):
         self.__controlador_sistema.abre_tela()
 
     def abre_tela(self):
-        lista_opcoes = {1: self.incluir_cultura, 2: self.alterar_cultura,
-                        3: self.lista_culturas, 4: self.excluir_cultura,
+        lista_opcoes = {1: self.incluir_estoque, 2: self.alterar_estoque,
+                        3: self.lista_estoques, 4: self.excluir_estoque,
                         0: self.retornar}
 
         continua = True
         while continua:
-            lista_opcoes[self.__tela_cultura.tela_opcoes()]()
+            lista_opcoes[self.__tela_estoque.tela_opcoes()]()

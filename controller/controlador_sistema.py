@@ -1,14 +1,14 @@
 from view.tela_sistema import TelaSistema
 from controller.controlador_cultura import ControladorCultura
 from controller.controlador_insumo import ControladorInsumo
-# from controller.controlador_fazenda import ControladorFazenda
+from controller.controlador_fazenda import ControladorFazenda
 
 class ControladorSistema:
 
     def __init__(self):
         self.__controlador_insumo = ControladorInsumo(self)
         self.__controlador_cultura = ControladorCultura(self)
-        # self.__controlador_fazenda = ControladorFazenda(self)
+        self.__controlador_fazenda = ControladorFazenda(self)
         self.__tela_sistema = TelaSistema()
 
     @property

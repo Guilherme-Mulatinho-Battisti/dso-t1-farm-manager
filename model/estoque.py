@@ -1,22 +1,29 @@
 class Estoque:
-    def __init__(self):
-        self.produtos = []
+    """Por padrão, o estoque recebe o ID do local."""
+    def __init__(self, id: int):
+        self.id = id
+        self.estoque = {}  # dict do tipo {produto: quantidade}
 
-    def adicionar_produto(self, produto):
-        self.produtos.append(produto)
-        print(f"Produto {produto} adicionado ao estoque.")
+    def adicionar_produto(self, produto, quantidade=1):
+        if produto in self.estoque:
+            self.estoque[produto] += quantidade
+        else:
+            self.estoque[produto] = quantidade
+        print(f"{quantidade}x {produto} adicionado(s) ao estoque.")
 
-    def remover_produto(self, produto):
-        if produto in self.produtos:
-            self.produtos.remove(produto)
-            print(f"Produto {produto} removido do estoque.")
+    def remover_produto(self, produto, quantidade=1):
+        if produto in self.estoque:
+            self.estoque[produto] -= quantidade
+            if self.estoque[produto] <= 0:
+                del self.estoque[produto]
+            print(f"{quantidade}x {produto} removido(s) do estoque.")
         else:
             print(f"Produto {produto} não encontrado no estoque.")
 
     def listar_produtos(self):
-        if not self.produtos:
+        if not self.estoque:
             print("Nenhum produto no estoque.")
         else:
             print("Produtos no estoque:")
-            for produto in self.produtos:
-                print(f"- {produto}")
+            for produto, qtd in self.estoque.items():
+                print(f"- {produto}: {qtd} unidade(s)")

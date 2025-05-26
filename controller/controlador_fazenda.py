@@ -1,5 +1,6 @@
 from view.tela_fazenda import TelaFazenda
 from model.fazenda import Fazenda
+from model.estoque import Estoque
 
 class ControladorFazenda():
     def __init__(self, controlador_sistema):
@@ -7,9 +8,10 @@ class ControladorFazenda():
         self.__tela_fazenda = TelaFazenda()
         self.__controlador_sistema = controlador_sistema
 
-    def pega_fazenda_por_endereco(self, endereco: int):
+    def pega_fazenda_por_id(self):
+        id_fazenda = self.__tela_fazenda.seleciona_fazenda()
         for fazenda in self.__fazendas:
-            if (fazenda.id == id):
+            if (fazenda.id == id_fazenda):
                 return fazenda
         return None
 
@@ -20,17 +22,38 @@ class ControladorFazenda():
                 self.__tela_fazenda.mostra_mensagem("ATENÇÃO: Fazenda com esse ID já existe.")
                 return
 
+        # Parte da Seleção das culturas
+        self.__tela_fazenda.mostra_mensagem("SELECIONE UMA CULTURA ABAIXO DIGITANDO O ID:")
+        self.__controlador_sistema.controlador_cultura.listar_culturas()
+        cultura_selecionada = self.__controlador_sistema.controlador_cultura.pega_cultura_por_id()
+
+        # Seleciona Estoque
+        self.__tela_fazenda.mostra_mensagem("SELECIONE UM ESTOQUE ABAIXO DIGITANDO O ID:")
+
         nova_fazenda = Fazenda(
-            dados_fazenda["nome"], dados_fazenda["id"], dados_fazenda["dose_semente"],
-            dados_fazenda["dose_fertilizante"], dados_fazenda["dose_defensivo"],
-            dados_fazenda["temp_crescimento"], dados_fazenda["num_aplicacao"]
+            dados_fazenda["pais"], dados_fazenda["estado"], dados_fazenda["cidade"],
+            dados_fazenda["nome"], dados_fazenda["id"],
+            cultura_selecionada, dados_fazenda["area_plantada"],
+            Estoque(dados_fazenda["id"], {})
         )
+        
         self.__fazendas.append(nova_fazenda)
+
+    def alterar_cultura(self):
+        self.__tela_fazenda.mostra_mensagem("SELECIONE UMA CULTURA ABAIXO DIGITANDO O ID:")
+        self.__controlador_sistema.controlador_cultura.listar_culturas()
+        cultura_selecionada = self.__controlador_sistema.controlador_cultura.pega_cultura_por_id()
+
+        if cultura_selecionada is not None:
+            fazenda = self.pega_fazenda_por_id()
+            fazenda.cultura = cultura_selecionada
+            self.__tela_fazenda.mostra_mensagem("Cultura alterada com sucesso!")
+        else:
+            self.__tela_fazenda.mostra_mensagem("ATENCAO: cultura não existente")
 
     def alterar_fazenda(self):
         self.lista_fazendas()
-        id_fazenda = self.__tela_fazenda.seleciona_fazenda()
-        fazenda = self.pega_fazenda_por_id(id_fazenda)
+        fazenda = self.pega_fazenda_por_id()
 
         if (fazenda is not None):
             novos_dados_fazenda = self.__tela_fazenda.pega_dados_fazenda()
@@ -56,8 +79,7 @@ class ControladorFazenda():
 
     def excluir_fazenda(self):
         self.lista_fazendas()
-        id_fazenda = self.__tela_fazenda.seleciona_fazenda()
-        fazenda = self.pega_fazenda_por_id(id_fazenda)
+        fazenda = self.pega_fazenda_por_id()
 
         if (fazenda is not None):
             self.__fazendas.remove(fazenda)
@@ -66,6 +88,18 @@ class ControladorFazenda():
             self.__tela_fazenda.mostra_mensagem("ATENCAO: fazenda não existente")
 
     def gerenciar_fazenda(self):
+        self.lista_fazendas()
+        fazenda = self.pega_fazenda_por_id()
+        if (fazenda is not None):
+            lista_opcoes = {1: self.__controlador_sistema.controlador_estoque.gerenciar_estoque,
+                            2: self.alterar_cultura(),
+                            0: self.retornar}
+
+            continua = True
+            while continua:
+                lista_opcoes[self.__tela_fazenda.tela_gerenciador_fazenda()]()
+        else:
+            self.__tela_fazenda.mostra_mensagem("ATENCAO: fazenda não existente")
 
     def retornar(self):
         self.__controlador_sistema.abre_tela()

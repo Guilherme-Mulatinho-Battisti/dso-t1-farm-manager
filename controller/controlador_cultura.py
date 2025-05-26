@@ -20,12 +20,12 @@ class ControladorCultura():
         self.__culturas.append(Cultura(nome='Algodao', id=4, dose_semente=1.2, dose_fertilizante=60,
                                        dose_defensivo=36, temp_crescimento=8, num_aplicacao=1))
 
-    def pega_cultura_por_id(self, id: int):
+    def pega_cultura_por_id(self):
+        id = self.__tela_cultura.seleciona_cultura()
         for cultura in self.__culturas:
             if (cultura.id == id):
                 return cultura
         return None
-    # TODO Testar unidades / informar mensagem
 
     def incluir_cultura(self):
         dados_cultura = self.__tela_cultura.pega_dados_cultura()
@@ -43,8 +43,7 @@ class ControladorCultura():
 
     def alterar_cultura(self):
         self.listar_culturas()
-        id_cultura = self.__tela_cultura.seleciona_cultura()
-        cultura = self.pega_cultura_por_id(id_cultura)
+        cultura = self.pega_cultura_por_id()
 
         if (cultura is not None):
             novos_dados_cultura = self.__tela_cultura.pega_dados_cultura()
@@ -74,8 +73,7 @@ class ControladorCultura():
 
     def excluir_cultura(self):
         self.listar_culturas()
-        id_cultura = self.__tela_cultura.seleciona_cultura()
-        cultura = self.pega_cultura_por_id(id_cultura)
+        cultura = self.pega_cultura_por_id()
 
         if (cultura is not None):
             self.__culturas.remove(cultura)
