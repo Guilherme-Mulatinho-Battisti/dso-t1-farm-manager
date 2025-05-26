@@ -22,15 +22,8 @@ class TelaOperador():
                 print("Entrada inválida. Digite apenas números.\n")
 
     def seleciona_insumo(self):
-        while True:
-            entrada = input("Código do insumo que deseja selecionar: ").strip()
-            if not entrada:
-                print("Id não pode ser vazio.")
-                continue
-            if not entrada.isdigit():
-                print("Id deve ser um número inteiro.")
-                continue
-            return int(entrada)
+        entrada = input("Nome do insumo que deseja selecionar: ").strip()
+        return entrada
 
     def mostra_mensagem(self, msg):
         print(msg)

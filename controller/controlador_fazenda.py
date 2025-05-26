@@ -147,9 +147,12 @@ class ControladorFazenda():
                 # colher
                 elif opcao == 4:
                     self.__controlador_sistema.controlador_operador.colher()
-                # aplicar insumo
+                # aplicar defensivo
                 elif opcao == 5:
-                    self.__controlador_sistema.controlador_operador.aplicar_insumo()
+                    self.__controlador_sistema.controlador_operador.aplicar_defensivo()
+                # aplicar fertilizante
+                elif opcao == 6:
+                    self.__controlador_sistema.controlador_operador.aplicar_fertilizante()
                 # retornar
                 elif opcao == 0:
                     continua = False

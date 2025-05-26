@@ -2,16 +2,29 @@ class TelaPorto():
     def tela_opcoes(self) -> int:
         while True:
             print("-------- PORTOS ----------")
-            print("1 - Incluir Porto")
-            print("2 - Gerenciar Porto")
-            print("3 - Alterar Porto")
-            print("4 - Listar Portos")
-            print("5 - Excluir Porto")
+            print("1 - Gerenciar Estoque Porto")
+            print("2 - Alterar Porto")
+            print("3 - Mostrar Portos")
             print("0 - Retornar")
 
             try:
                 opcao = int(input("Escolha a opção: "))
-                if opcao in [0, 1, 2, 3, 4, 5]:
+                if opcao in [0, 1, 2, 3]:
+                    return opcao
+                else:
+                    print("Opção fora do intervalo. Tente novamente.")
+            except ValueError:
+                print("Entrada inválida. Digite um número inteiro.")
+
+    def tela_gerenciador_estoque_porto(self) -> int:
+        while True:
+            print("-------- GERENCIADOR ESTOQUE PORTO ----------")
+            print("1 - Gerenciar Estoque")
+            print("0 - Retornar")
+
+            try:
+                opcao = int(input("Escolha a opção: "))
+                if opcao in [0, 1]:
                     return opcao
                 else:
                     print("Opção fora do intervalo. Tente novamente.")
@@ -24,13 +37,6 @@ class TelaPorto():
         nome = input("Nome: ")
         while not isinstance(nome, str) or nome.strip() == "":
             nome = input("Nome inválido. Digite novamente: ")
-
-        while True:
-            try:
-                id = int(input("ID (número inteiro): "))
-                break
-            except ValueError:
-                print("ID inválido. Digite um número inteiro.")
 
         print("--- ENDEREÇO ---")
         pais = input("País: ")
@@ -55,18 +61,9 @@ class TelaPorto():
 
     def mostra_porto(self, dados_porto: dict) -> None:
         print("Nome da Porto: ", dados_porto["nome"])
-        print("ID da Porto: ", dados_porto["id"])
         print("Endereço: ", dados_porto["endereco"])
         print("Estoque: ", dados_porto["estoque"])
         print("\n")
-
-    def seleciona_porto(self) -> int:
-        while True:
-            try:
-                id = int(input("ID do porto que deseja selecionar: "))
-                return id
-            except ValueError:
-                print("Entrada inválida. Digite um número inteiro.")
 
     def mostra_mensagem(self, msg) -> None:
         print(msg)
