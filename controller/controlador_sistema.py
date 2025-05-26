@@ -2,6 +2,7 @@ from view.tela_sistema import TelaSistema
 from controller.controlador_cultura import ControladorCultura
 from controller.controlador_insumo import ControladorInsumo
 from controller.controlador_fazenda import ControladorFazenda
+from controller.controlador_estoque import ControladorEstoque
 
 class ControladorSistema:
 
@@ -9,6 +10,7 @@ class ControladorSistema:
         self.__controlador_insumo = ControladorInsumo(self)
         self.__controlador_cultura = ControladorCultura(self)
         self.__controlador_fazenda = ControladorFazenda(self)
+        self.__controlador_estoque = ControladorEstoque(self)
         self.__tela_sistema = TelaSistema()
 
     @property
@@ -19,9 +21,13 @@ class ControladorSistema:
     def controlador_cultura(self):
         return self.__controlador_cultura
 
-    # @property
-    # def controlador_fazenda(self):
-    #     return self.__controlador_fazenda
+    @property
+    def controlador_fazenda(self):
+        return self.__controlador_fazenda
+
+    @property
+    def controlador_estoque(self):
+        return self.__controlador_estoque
 
     def inicializa_sistema(self):
         self.abre_tela()

@@ -21,9 +21,15 @@ class ControladorCultura():
                                        dose_defensivo=36, temp_crescimento=8, num_aplicacao=1))
 
     def pega_cultura_por_id(self):
-        id = self.__tela_cultura.seleciona_cultura()
+        while True:
+            try:
+                id_cultura = int(self.__tela_cultura.seleciona_cultura())
+                break
+            except ValueError:
+                self.__tela_cultura.mostra_mensagem("ID inválido. Digite um número inteiro.")
+
         for cultura in self.__culturas:
-            if (cultura.id == id):
+            if cultura.id == id_cultura:
                 return cultura
         return None
 

@@ -2,7 +2,6 @@ from view.tela_insumo import TelaInsumo
 from model.insumo import Insumo, Defensivo, Fertilizante, Semente, Implemento
 
 class ControladorInsumo():
-    # Fazer lançamento e tratamento de exceções, ao invés de apenas mostrar mensagem na tela.
     def __init__(self, controlador_sistema):
         self.__insumos = []
         self.__controlador_sistema = controlador_sistema
@@ -41,9 +40,16 @@ class ControladorInsumo():
             self.__tela_insumo.mostra_mensagem("ATENCAO: Tipo de insumo desconhecido")
             return 0
 
-    def pega_insumo_por_id(self, id: int):
+    def pega_insumo_por_id(self):
+        while True:
+            try:
+                id_insumo = int(self.__tela_insumo.seleciona_insumo())
+                break
+            except ValueError:
+                self.__tela_insumo.mostra_mensagem("ID inválido. Digite um número inteiro.")
+
         for insumo in self.__insumos:
-            if (int(insumo.id) == int(id)):
+            if insumo.id == id_insumo:
                 return insumo
         return None
 

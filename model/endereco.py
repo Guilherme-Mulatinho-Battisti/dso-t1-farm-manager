@@ -1,12 +1,10 @@
-from abc import ABC, abstractmethod
-
-class Endereco(ABC):
+class Endereco():
     """ Classe que representa um endereço.
         - pais: Pais do endereço.
         - estado: Estado do endereço.
         - cidade: Cidade do endereço.
     """
-    @abstractmethod
+
     def __init__(self, pais: str, estado: str, cidade: str) -> None:
         self.__pais = pais
         self.__estado = estado

@@ -1,8 +1,9 @@
 class Estoque:
-    """Por padrão, o estoque recebe o ID do local."""
-    def __init__(self, id: int):
+    """ - id : Por padrão, o estoque recebe o ID do local.
+        - estoque: dict do tipo {produto: quantidade}"""
+    def __init__(self, id: int, estoque: dict = {}):
         self.id = id
-        self.estoque = {}  # dict do tipo {produto: quantidade}
+        self.estoque = estoque  # 
 
     def adicionar_produto(self, produto, quantidade=1):
         if produto in self.estoque:
