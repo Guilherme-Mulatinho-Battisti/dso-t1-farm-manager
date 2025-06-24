@@ -1,4 +1,8 @@
-class TelaPorto():
+import FreeSimpleGUI as sg
+from .tela_base import TelaBase
+
+
+class TelaPorto(TelaBase):
     def tela_opcoes(self) -> int:
         while True:
             print("-------- PORTOS ----------")
@@ -16,6 +20,32 @@ class TelaPorto():
             except ValueError:
                 print("Entrada inválida. Digite um número inteiro.")
 
+    def tela_opcoes_gui(self) -> int:
+
+        layout = super().get_layout(
+            titulo='Portos',
+            opcoes=['Gerenciar Estoque', 'Alterar Porto', 'Mostrar Portos'],
+            opcao_retorno='Retornar'
+        )
+
+        while True:
+            window = super().get_janela("Portos", layout)
+
+            event, values = window.read()
+            opcao = None
+            if event == sg.WIN_CLOSED or event == 'Retornar':
+                print("Retornado!")
+                opcao = 0
+            elif event == 'Gerenciar Estoque':
+                opcao = 1
+            elif event == 'Alterar Porto':
+                opcao = 2
+            elif event == 'Mostrar Portos':
+                opcao = 3
+
+            window.close()
+            return opcao
+
     def tela_gerenciador_estoque_porto(self) -> int:
         while True:
             print("-------- GERENCIADOR ESTOQUE PORTO ----------")
@@ -30,6 +60,27 @@ class TelaPorto():
                     print("Opção fora do intervalo. Tente novamente.")
             except ValueError:
                 print("Entrada inválida. Digite um número inteiro.")
+
+    def tela_gerenciador_estoque_porto_gui(self) -> int:
+        layout = super().get_layout(
+            titulo='Gerenciador Estoque Porto',
+            opcoes=['Gerenciar Estoque'],
+            opcao_retorno='Retornar'
+        )
+
+        while True:
+            window = super().get_janela("Gerenciador Estoque Porto", layout)
+
+            event, values = window.read()
+            opcao = None
+            if event == sg.WIN_CLOSED or event == 'Retornar':
+                print("Retornado!")
+                opcao = 0
+            elif event == 'Gerenciar Estoque':
+                opcao = 1
+
+            window.close()
+            return opcao
 
     def pega_dados_porto(self) -> dict:
         print("-------- DADOS PORTO ----------")
