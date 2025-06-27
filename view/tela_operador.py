@@ -1,4 +1,4 @@
-class TelaOperador():
+class TelaOperador:
     def tela_opcoes(self):
         print("\n")
         while True:

@@ -1,4 +1,4 @@
-class TelaFazenda():
+class TelaFazenda:
     def tela_opcoes(self) -> int:
         while True:
             print("-------- FAZENDAS ----------")
@@ -79,7 +79,7 @@ class TelaFazenda():
             "pais": pais.strip(),
             "estado": estado.strip(),
             "cidade": cidade.strip(),
-            "area_plantada": area
+            "area_plantada": area,
         }
 
     def mostra_fazenda(self, dados_fazenda: dict) -> None:

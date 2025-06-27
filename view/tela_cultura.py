@@ -1,4 +1,4 @@
-class TelaCultura():
+class TelaCultura:
     def tela_opcoes(self) -> int:
         print("-------- CULTURAS ----------")
         print("Escolha a opcao")
@@ -21,9 +21,15 @@ class TelaCultura():
         temp_crescimento = input("Tempo de Crescimento: ")
         num_aplicacao = input("Numero de Aplicações: ")
 
-        return {"nome": nome, "id": id, "dose_semente": dose_semente,
-                "dose_fertilizante": dose_fertilizante, "dose_defensivo": dose_defensivo,
-                "temp_crescimento": temp_crescimento, "num_aplicacao": num_aplicacao}
+        return {
+            "nome": nome,
+            "id": id,
+            "dose_semente": dose_semente,
+            "dose_fertilizante": dose_fertilizante,
+            "dose_defensivo": dose_defensivo,
+            "temp_crescimento": temp_crescimento,
+            "num_aplicacao": num_aplicacao,
+        }
 
     def mostra_cultura(self, dados_cultura) -> None:
         print("Nome da Cultura: ", dados_cultura["nome"])

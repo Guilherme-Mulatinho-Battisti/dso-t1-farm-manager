@@ -1,4 +1,4 @@
-class TelaInsumo():
+class TelaInsumo:
     def tela_opcoes(self):
         print("\n")
         while True:
@@ -85,7 +85,9 @@ class TelaInsumo():
         # DEFENSIVOS
         if tipo_insumo == 2:
             while True:
-                funcao = input("Função (Herbicida, Fungicida, Inseticida ou Acaricida): ").strip()
+                funcao = input(
+                    "Função (Herbicida, Fungicida, Inseticida ou Acaricida): "
+                ).strip()
                 if funcao:
                     break
                 print("Funcao não pode ser vazio.")
@@ -99,11 +101,19 @@ class TelaInsumo():
                     break
                 print("cultura não pode ser vazio.")
             while True:
-                tecnologia = input("Tecnologia (Transgenica ou Nao Transgenica): ").strip()
+                tecnologia = input(
+                    "Tecnologia (Transgenica ou Nao Transgenica): "
+                ).strip()
                 if tecnologia:
                     break
                 print("Tecnologia não pode ser vazio.")
-            return {"nome": nome, "id": id, "valor": valor, "cultura": cultura, "tecnologia": tecnologia}
+            return {
+                "nome": nome,
+                "id": id,
+                "valor": valor,
+                "cultura": cultura,
+                "tecnologia": tecnologia,
+            }
 
         # IMPLEMENTOS
         if tipo_insumo == 4:
@@ -117,7 +127,13 @@ class TelaInsumo():
                 if tipo:
                     break
                 print("Tipo não pode ser vazio.")
-            return {"nome": nome, "id": id, "valor": valor, "processo": processo, "tipo": tipo}
+            return {
+                "nome": nome,
+                "id": id,
+                "valor": valor,
+                "processo": processo,
+                "tipo": tipo,
+            }
 
     def mostra_insumo(self, dados_insumo: dict):
         for key, value in dados_insumo.items():

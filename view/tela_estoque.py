@@ -1,4 +1,4 @@
-class TelaEstoque():
+class TelaEstoque:
     def tela_gerenciador_estoque(self) -> int:
         print("-------- GERENCIADOR DE ESTOQUE ----------")
         print("Escolha a opcao")
@@ -15,10 +15,10 @@ class TelaEstoque():
     def mostra_estoque(self, estoque: dict):
         print("\nProdutos no estoque:")
         print(f"ID do Estoque: {estoque['id']}")
-        if not estoque['estoque']:
+        if not estoque["estoque"]:
             print("Estoque vazio.")
             return
-        for produto, quantidade in estoque['estoque'].items():
+        for produto, quantidade in estoque["estoque"].items():
             print(f"- Produto: {produto} | Quantidade: {quantidade}")
         print("\n")
 

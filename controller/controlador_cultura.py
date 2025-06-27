@@ -1,10 +1,14 @@
 from view.tela_cultura import TelaCultura
 from model.cultura import Cultura
+from DAOs.dao_cultura import CulturaDAO
+
 
 class ControladorCultura():
 
     def __init__(self, controlador_sistema):
-        self.__culturas = []
+        # self.__culturas = []
+        self.__culturas_DAO = CulturaDAO()
+
         self.__controlador_sistema = controlador_sistema
         self.__tela_cultura = TelaCultura()
         self.carrega_dados()
@@ -28,14 +32,14 @@ class ControladorCultura():
             except ValueError:
                 self.__tela_cultura.mostra_mensagem("ID inválido. Digite um número inteiro.")
 
-        for cultura in self.__culturas:
+        for cultura in self.__culturas_DAO:
             if cultura.id == id_cultura:
                 return cultura
         return None
 
     def incluir_cultura(self):
         dados_cultura = self.__tela_cultura.pega_dados_cultura()
-        for cultura in self.__culturas:
+        for cultura in self.__culturas_DAO:
             if cultura.id == dados_cultura["id"]:
                 self.__tela_cultura.mostra_mensagem("ATENÇÃO: Cultura com esse ID já existe.")
                 return
@@ -45,7 +49,7 @@ class ControladorCultura():
             dados_cultura["dose_fertilizante"], dados_cultura["dose_defensivo"],
             dados_cultura["temp_crescimento"], dados_cultura["num_aplicacao"]
         )
-        self.__culturas.append(nova_cultura)
+        self.__culturas_DAO.append(nova_cultura)
 
     def alterar_cultura(self):
         self.listar_culturas()
@@ -65,11 +69,11 @@ class ControladorCultura():
             self.__tela_cultura.mostra_mensagem("ATENCAO: cultura não existente")
 
     def listar_culturas(self):
-        if len(self.__culturas) == 0:
+        if len(self.__culturas_DAO) == 0:
             self.__tela_cultura.mostra_mensagem("ATENCAO: lista de culturas vazia")
             return
 
-        for cultura in self.__culturas:
+        for cultura in self.__culturas_DAO:
             self.__tela_cultura.mostra_cultura({"nome": cultura.nome, "id": cultura.id,
                                                 "dose_semente": cultura.dose_semente,
                                                 "dose_fertilizante": cultura.dose_fertilizante,
@@ -82,7 +86,7 @@ class ControladorCultura():
         cultura = self.pega_cultura_por_id()
 
         if (cultura is not None):
-            self.__culturas.remove(cultura)
+            self.__culturas_DAO.remove(cultura)
             self.listar_culturas()
         else:
             self.__tela_cultura.mostra_mensagem("ATENCAO: cultura não existente")

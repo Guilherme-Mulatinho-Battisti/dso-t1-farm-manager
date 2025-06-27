@@ -23,9 +23,9 @@ class TelaPorto(TelaBase):
     def tela_opcoes_gui(self) -> int:
 
         layout = super().get_layout(
-            titulo='Portos',
-            opcoes=['Gerenciar Estoque', 'Alterar Porto', 'Mostrar Portos'],
-            opcao_retorno='Retornar'
+            titulo="Portos",
+            opcoes=["Gerenciar Estoque", "Alterar Porto", "Mostrar Portos"],
+            opcao_retorno="Retornar",
         )
 
         while True:
@@ -33,14 +33,14 @@ class TelaPorto(TelaBase):
 
             event, values = window.read()
             opcao = None
-            if event == sg.WIN_CLOSED or event == 'Retornar':
+            if event == sg.WIN_CLOSED or event == "Retornar":
                 print("Retornado!")
                 opcao = 0
-            elif event == 'Gerenciar Estoque':
+            elif event == "Gerenciar Estoque":
                 opcao = 1
-            elif event == 'Alterar Porto':
+            elif event == "Alterar Porto":
                 opcao = 2
-            elif event == 'Mostrar Portos':
+            elif event == "Mostrar Portos":
                 opcao = 3
 
             window.close()
@@ -63,9 +63,9 @@ class TelaPorto(TelaBase):
 
     def tela_gerenciador_estoque_porto_gui(self) -> int:
         layout = super().get_layout(
-            titulo='Gerenciador Estoque Porto',
-            opcoes=['Gerenciar Estoque'],
-            opcao_retorno='Retornar'
+            titulo="Gerenciador Estoque Porto",
+            opcoes=["Gerenciar Estoque"],
+            opcao_retorno="Retornar",
         )
 
         while True:
@@ -73,10 +73,10 @@ class TelaPorto(TelaBase):
 
             event, values = window.read()
             opcao = None
-            if event == sg.WIN_CLOSED or event == 'Retornar':
+            if event == sg.WIN_CLOSED or event == "Retornar":
                 print("Retornado!")
                 opcao = 0
-            elif event == 'Gerenciar Estoque':
+            elif event == "Gerenciar Estoque":
                 opcao = 1
 
             window.close()
