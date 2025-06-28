@@ -25,7 +25,7 @@ class TelaBase:
             ]
         )
 
-        return conteudo
+        return conteudo 
 
     def get_janela(self, titulo, layout):
         sg.theme("NeonGreen1")
