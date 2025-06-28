@@ -1,5 +1,5 @@
 import FreeSimpleGUI as sg
-from .tela_base import TelaBase
+from .tela_base import TelaBase, get_layout, get_janela
 
 
 class TelaPorto(TelaBase):
@@ -21,30 +21,42 @@ class TelaPorto(TelaBase):
                 print("Entrada inválida. Digite um número inteiro.")
 
     def tela_opcoes_gui(self) -> int:
+        window, opcao = None, None
+        try:
 
-        layout = super().get_layout(
-            titulo="Portos",
-            opcoes=["Gerenciar Estoque", "Alterar Porto", "Mostrar Portos"],
-            opcao_retorno="Retornar",
-        )
+            layout = get_layout(
+                titulo="Portos",
+                opcoes=["Gerenciar Estoque", "Alterar Porto", "Mostrar Portos"],
+                opcao_retorno="Retornar",
+            )
 
-        while True:
-            window = super().get_janela("Portos", layout)
+            window = get_janela("Portos", layout)
 
             event, values = window.read()
-            opcao = None
-            if event == sg.WIN_CLOSED or event == "Retornar":
-                print("Retornado!")
-                opcao = 0
-            elif event == "Gerenciar Estoque":
+
+            if event == "Gerenciar Estoque":
                 opcao = 1
             elif event == "Alterar Porto":
                 opcao = 2
             elif event == "Mostrar Portos":
                 opcao = 3
+            else:
+                print("Retornado!")
+                opcao = 0
 
-            window.close()
-            return opcao
+        except Exception as e:
+            opcao = 0
+            raise Exception(f"Erro ao processar a opção: {e}") from e
+
+        finally:
+            if window is not None:
+                window.close()
+            if opcao is None:
+                print("Nenhuma opção selecionada. Retornando...")
+                opcao = 0
+
+        return opcao
+
 
     def tela_gerenciador_estoque_porto(self) -> int:
         while True:
@@ -62,14 +74,14 @@ class TelaPorto(TelaBase):
                 print("Entrada inválida. Digite um número inteiro.")
 
     def tela_gerenciador_estoque_porto_gui(self) -> int:
-        layout = super().get_layout(
+        layout = get_layout(
             titulo="Gerenciador Estoque Porto",
             opcoes=["Gerenciar Estoque"],
             opcao_retorno="Retornar",
         )
 
         while True:
-            window = super().get_janela("Gerenciador Estoque Porto", layout)
+            window = get_janela("Gerenciador Estoque Porto", layout)
 
             event, values = window.read()
             opcao = None

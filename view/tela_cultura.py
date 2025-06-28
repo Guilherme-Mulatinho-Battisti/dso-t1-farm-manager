@@ -1,3 +1,6 @@
+from view.tela_base import get_layout, get_janela
+
+
 class TelaCultura:
     def tela_opcoes(self) -> int:
         print("-------- CULTURAS ----------")
@@ -9,6 +12,42 @@ class TelaCultura:
         print("0 - Retornar")
 
         opcao = int(input("Escolha a opcao: "))
+        return opcao
+
+    def tela_opcoes_gui(self) -> int:
+        window, opcao = None, None
+        try:
+            layout = get_layout("Culturas",
+                                ["Incluir Cultura", "Alterar Cultura", "Listar Culturas", "Excluir Cultura"],
+                                "Retornar")
+
+            window = get_janela("Culturas", layout)
+
+            event, values = window.read()
+
+            if event == "Incluir Cultura":
+                opcao = 1
+            elif event == "Alterar Cultura":
+                opcao = 2
+            elif event == "Listar Culturas":
+                opcao = 3
+            elif event == "Excluir Cultura":
+                opcao = 4
+            else:
+                print("Retornado!")
+                opcao = 0
+
+        except Exception as e:
+            opcao = 0
+            raise Exception(f"Erro ao processar a opção: {e}") from e
+
+        finally:
+            if window is not None:
+                window.close()
+            if opcao is None:
+                print("Nenhuma opção selecionada. Retornando...")
+                opcao = 0
+
         return opcao
 
     def pega_dados_cultura(self) -> dict:

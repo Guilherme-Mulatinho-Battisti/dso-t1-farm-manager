@@ -165,4 +165,4 @@ class ControladorInsumo():
 
         continua = True
         while continua:
-            lista_opcoes[self.__tela_insumo.tela_opcoes()]()
+            lista_opcoes[self.__tela_insumo.tela_opcoes_gui()]()

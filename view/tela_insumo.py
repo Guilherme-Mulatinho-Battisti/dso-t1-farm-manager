@@ -1,3 +1,6 @@
+from view.tela_base import get_layout, get_janela
+
+
 class TelaInsumo:
     def tela_opcoes(self):
         print("\n")
@@ -21,6 +24,41 @@ class TelaInsumo:
                     print("Opção inválida. Digite um número de 0 a 4.\n")
             except ValueError:
                 print("Entrada inválida. Digite apenas números.\n")
+
+    def tela_opcoes_gui(self):
+        window, opcao = None, None
+
+        try:
+
+            layout = get_layout("Insumos",
+                                opcoes=["Incluir Insumo", "Alterar Insumo", "Listar Insumo", "Excluir Insumo"],
+                                opcao_retorno="Retornar")
+
+            window = get_janela("Insumos", layout)
+            event, values = window.read()
+
+            if event == "Incluir Insumo":
+                opcao = 1
+            elif event == "Alterar Insumo":
+                opcao = 2
+            elif event == "Listar Insumo":
+                opcao = 3
+            elif event == "Excluir Insumo":
+                opcao = 4
+            else:
+                print("Retornado!")
+                opcao = 0
+        except ValueError:
+            print("Entrada inválida. Digite apenas números.")
+            opcao = 0
+        finally:
+            if window is not None:
+                window.close()
+            if opcao is None:
+                print("Nenhuma opção selecionada. Retornando...")
+                opcao = 0
+
+        return opcao
 
     def tela_opcoes_insumos(self):
         print("\n")

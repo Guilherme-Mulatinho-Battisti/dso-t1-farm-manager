@@ -1,5 +1,5 @@
 import FreeSimpleGUI as sg
-from .tela_base import TelaBase
+from .tela_base import TelaBase, get_layout, get_janela
 
 
 class TelaSistema(TelaBase):
@@ -24,16 +24,17 @@ class TelaSistema(TelaBase):
                 print("Entrada inválida. Digite apenas números.\n")
 
     def tela_opcoes_gui(self):
-        sg.theme("NeonGreen1")
+        window, opcao = None, None
+        try:
+            sg.theme("NeonGreen1")
+            
+            layout = get_layout(
+                titulo="Escolha uma opção",
+                opcoes=["Insumo", "Cultura", "Fazenda", "Porto"],
+                opcao_retorno="Finalizar sistema",
+            )
 
-        layout = super().get_layout(
-            titulo="Escolha uma opção",
-            opcoes=["Insumo", "Cultura", "Fazenda", "Porto"],
-            opcao_retorno="Finalizar sistema",
-        )
-
-        while True:
-            window = super().get_janela("SisAgro", layout)
+            window = get_janela("SisAgro", layout)
 
             event, values = window.read()
             opcao = None
@@ -49,5 +50,15 @@ class TelaSistema(TelaBase):
             elif event == "Porto":
                 opcao = 4
 
-            window.close()
-            return opcao
+        except Exception as e:
+            print(f"Erro ao processar a opção: {e}")
+            opcao = 0
+        finally:
+            if window is not None:
+                window.close()
+            if opcao is None:
+                print("Nenhuma opção selecionada. Retornando...")
+                opcao = 0
+
+        return opcao
+
