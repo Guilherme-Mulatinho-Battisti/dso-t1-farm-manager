@@ -86,9 +86,9 @@ class TelaInsumo(TelaBase):
         window, opcao = None, None
 
         try:
-            layout = get_layout_opcoes("Tipos de Insumo",
+            layout = get_layout_opcoes("Que insumos voce deseja incluir?",
                                        opcoes=["Fertilizante", "Defensivo", "Semente", "Implemento"],
-                                       opcao_retorno="Retornar")
+                                       opcao_retorno="Cancelar")
 
             window = get_janela("Tipos de Insumo", layout)
             event, values = window.read()
@@ -208,9 +208,7 @@ class TelaInsumo(TelaBase):
                 "tipo": tipo,
             }
 
-    def mostra_insumo(self, dados_insumo: dict):
-        for key, value in dados_insumo.items():
-            print(f"{key.upper()}: {value}")
+        return None
 
     def mostra_insumo_gui(self, dados_insumo: list) -> None:
         linhas = []
@@ -227,16 +225,166 @@ class TelaInsumo(TelaBase):
         window.read()
         window.close()
 
-    def seleciona_insumo(self):
-        while True:
-            entrada = input("Código do insumo que deseja selecionar: ").strip()
-            if not entrada:
-                print("Id não pode ser vazio.")
-                continue
-            if not entrada.isdigit():
-                print("Id deve ser um número inteiro.")
-                continue
-            return int(entrada)
-
     def mostra_mensagem(self, msg):
         sg.popup(msg, title="Mensagem", keep_on_top=True)
+
+    def pega_dados_insumo_gui(self, tipo_insumo=None):
+        window, dados = None, None
+
+        try:
+            # Campos comuns para todos os tipos de insumo
+            layout_comum = [
+                [sg.Text("DADOS DO INSUMO", font=("Arial", 14, "bold"))],
+                [sg.Text("Nome:"), sg.Input(key="-NOME-", size=(30, 1))],
+                [sg.Text("ID:"), sg.Input(key="-ID-", size=(10, 1))],
+                [sg.Text("Valor:"), sg.Input(key="-VALOR-", size=(15, 1))],
+            ]
+
+            layout_especifico = []
+
+            if tipo_insumo == 1:  # FERTILIZANTES
+                layout_especifico = [
+                    [sg.Text("Fonte:"), sg.Combo(["Organico", "Quimico"], key="-FONTE-", size=(20, 1))]
+                ]
+            elif tipo_insumo == 2:  # DEFENSIVOS
+                layout_especifico = [
+                    [sg.Text("Função:"), sg.Combo(["Herbicida", "Fungicida", "Inseticida", "Acaricida"],
+                                                  key="-FUNCAO-", size=(20, 1))]
+                ]
+            elif tipo_insumo == 3:  # SEMENTES
+                layout_especifico = [
+                    [sg.Text("Cultura:"), sg.Combo(["Soja", "Milho", "Trigo", "Algodão"],
+                                                   key="-CULTURA-", size=(20, 1))],
+                    [sg.Text("Tecnologia:"), sg.Combo(["Transgenica", "Nao Transgenica"],
+                                                      key="-TECNOLOGIA-", size=(20, 1))]
+                ]
+            elif tipo_insumo == 4:  # IMPLEMENTOS
+                layout_especifico = [
+                    [sg.Text("Processo:"), sg.Combo(["Plantio", "Colheita"],
+                                                    key="-PROCESSO-", size=(20, 1))],
+                    [sg.Text("Tipo:"), sg.Combo(["Manual", "Mecanico"],
+                                                key="-TIPO-", size=(20, 1))]
+                ]
+
+            layout = layout_comum + layout_especifico + [
+                [sg.Button("Confirmar", key="-CONFIRMAR-"), sg.Button("Cancelar", key="-CANCELAR-")]
+            ]
+
+            window = get_janela("Dados do Insumo", layout)
+
+            if window is None:
+                return None
+
+            while True:
+                try:
+                    event, values = window.read()
+                except Exception:
+                    break
+
+                if event in (sg.WIN_CLOSED, "-CANCELAR-", None):
+                    break
+
+                if event == "-CONFIRMAR-":
+                    # Validação dos campos comuns
+                    nome = values["-NOME-"].strip()
+                    if not nome:
+                        sg.popup_error("Nome não pode ser vazio!")
+                        continue
+
+                    id_str = values["-ID-"].strip()
+                    if not id_str:
+                        sg.popup_error("ID não pode ser vazio!")
+                        continue
+                    if not id_str.isdigit():
+                        sg.popup_error("ID deve ser um número inteiro!")
+                        continue
+                    id_insumo = int(id_str)
+
+                    valor_str = values["-VALOR-"].strip()
+                    if not valor_str:
+                        sg.popup_error("Valor não pode ser vazio!")
+                        continue
+                    try:
+                        valor = float(valor_str)
+                    except ValueError:
+                        sg.popup_error("Valor deve ser um número!")
+                        continue
+
+                    # Dados básicos
+                    dados = {"nome": nome, "id": id_insumo, "valor": valor}
+
+                    # Validação e adição de campos específicos
+                    if tipo_insumo == 1:  # FERTILIZANTES
+                        fonte = values["-FONTE-"]
+                        if not fonte:
+                            sg.popup_error("Fonte não pode ser vazia!")
+                            continue
+                        dados["fonte"] = fonte
+
+                    elif tipo_insumo == 2:  # DEFENSIVOS
+                        funcao = values["-FUNCAO-"]
+                        if not funcao:
+                            sg.popup_error("Função não pode ser vazia!")
+                            continue
+                        dados["funcao"] = funcao
+
+                    elif tipo_insumo == 3:  # SEMENTES
+                        cultura = values["-CULTURA-"]
+                        tecnologia = values["-TECNOLOGIA-"]
+                        if not cultura:
+                            sg.popup_error("Cultura não pode ser vazia!")
+                            continue
+                        if not tecnologia:
+                            sg.popup_error("Tecnologia não pode ser vazia!")
+                            continue
+                        dados["cultura"] = cultura
+                        dados["tecnologia"] = tecnologia
+
+                    elif tipo_insumo == 4:  # IMPLEMENTOS
+                        processo = values["-PROCESSO-"]
+                        tipo = values["-TIPO-"]
+                        if not processo:
+                            sg.popup_error("Processo não pode ser vazio!")
+                            continue
+                        if not tipo:
+                            sg.popup_error("Tipo não pode ser vazio!")
+                            continue
+                        dados["processo"] = processo
+                        dados["tipo"] = tipo
+
+                    break
+
+        except Exception as e:
+            sg.popup_error(f"Erro ao processar dados: {e}")
+            dados = None
+        finally:
+            if window is not None:
+                window.close()
+
+        return dados
+
+    def seleciona_insumo_gui(self, dados_insumos):
+        layout = [
+            [sg.Text("Selecione o insumo desejado:", font=("Arial", 14, "bold"))],
+        ]
+        for insumo in dados_insumos:
+            texto = f"ID: {insumo.get('id', '')} | Nome: {insumo.get('nome', '')} | Valor: {insumo.get('valor', '')}"
+            layout.append([
+                sg.Text(texto, size=(60, 1), font=("Courier New", 12)),
+                sg.Button("Selecionar", key=f"-SEL-{insumo.get('id', '')}-")
+            ])
+        layout.append([sg.Button("Cancelar", key="-CANCELAR-")])
+        window = get_janela("Selecionar Insumo", layout)
+        id_insumo = None
+        while True:
+            event, values = window.read()
+            if event in (sg.WIN_CLOSED, "-CANCELAR-"):
+                break
+            for insumo in dados_insumos:
+                if event == f"-SEL-{insumo.get('id', '')}-":
+                    id_insumo = insumo.get('id', None)
+                    break
+            if id_insumo is not None:
+                break
+        window.close()
+        return id_insumo

@@ -1,8 +1,10 @@
+from typing import Any
+
 from view.tela_insumo import TelaInsumo
-from model.insumo import Insumo, Defensivo, Fertilizante, Semente, Implemento
+from model.insumo import Defensivo, Fertilizante, Semente, Implemento
 
 
-class ControladorInsumo():
+class ControladorInsumo:
     def __init__(self, controlador_sistema):
         self.__insumos = []
         self.__controlador_sistema = controlador_sistema
@@ -45,29 +47,30 @@ class ControladorInsumo():
             self.__tela_insumo.mostra_mensagem("ATENCAO: Tipo de insumo desconhecido")
             return 0
 
-    def pega_insumo_por_id(self):
-        while True:
-            try:
-                id_insumo = int(self.__tela_insumo.seleciona_insumo())
-                break
-            except ValueError:
-                self.__tela_insumo.mostra_mensagem("ID inválido. Digite um número inteiro.")
+    def pega_insumo_por_id(self, id_insumo: int) -> Any | None:
+        try:
+            insumo = None
+            for i in self.__insumos:
+                if i.id == id_insumo:
+                    insumo = i
+                    return insumo
 
-        for insumo in self.__insumos:
-            if insumo.id == id_insumo:
-                return insumo
+        except ValueError:
+            self.__tela_insumo.mostra_mensagem("ID inválido. Digite um número inteiro.")
+
         return None
 
     def incluir_insumo(self):
-        tipo = self.__tela_insumo.tela_opcoes_insumos()
+        tipo = self.__tela_insumo.tela_opcoes_insumos_gui()
 
         if tipo == 0:
             return
 
-        dados_insumo = self.__tela_insumo.pega_dados_insumo(tipo)
+        dados_insumo = self.__tela_insumo.pega_dados_insumo_gui(tipo)
 
         # Verificar se o insumo já existe antes de incluir
         r_insumo = self.pega_insumo_por_id(dados_insumo["id"])
+
         if r_insumo is None:
             if tipo == 1:
                 insumo = Fertilizante(dados_insumo["nome"], dados_insumo["id"],
@@ -86,16 +89,16 @@ class ControladorInsumo():
             self.__tela_insumo.mostra_mensagem("ATENCAO: Insumo já existente")
 
     def alterar_insumo(self):
-        lst_insumo = self.lista_insumo()
-        if not lst_insumo:
-            return
+        dados = self._montar_dados_insumo()
 
-        id_insumo = self.__tela_insumo.seleciona_insumo()
+        id_insumo = self.__tela_insumo.seleciona_insumo_gui(dados)
+        if id_insumo is None:
+            return
         insumo = self.pega_insumo_por_id(id_insumo)
 
-        if (insumo is not None):
+        if insumo is not None:
             tipo = self.__retorna_tipo_insumo(insumo)
-            novos_dados_insumo = self.__tela_insumo.pega_dados_insumo(tipo)
+            novos_dados_insumo = self.__tela_insumo.pega_dados_insumo_gui(tipo)
             insumo.nome = novos_dados_insumo["nome"]
             insumo.id = novos_dados_insumo["id"]
             insumo.valor = novos_dados_insumo["valor"]
@@ -121,36 +124,21 @@ class ControladorInsumo():
             self.__tela_insumo.mostra_mensagem("\n")
             return
 
-        dados = []
-
-        for insumo in self.__insumos:
-            dado = {
-                "nome": insumo.nome,
-                "id": insumo.id,
-                "valor": insumo.valor
-            }
-
-            if isinstance(insumo, Fertilizante):
-                dado["fonte"] = insumo.fonte
-            elif isinstance(insumo, Defensivo):
-                dado["funcao"] = insumo.funcao
-            elif isinstance(insumo, Semente):
-                dado["cultura"] = insumo.cultura
-                dado["tecnologia"] = insumo.tecnologia
-            elif isinstance(insumo, Implemento):
-                dado["processo"] = insumo.processo
-                dado["tipo"] = insumo.tipo
-
-            dados.append(dado)
+        dados = self._montar_dados_insumo()
 
         self.__tela_insumo.mostra_insumo_gui(dados)
 
     def excluir_insumo(self):
-        self.lista_insumo()
-        id_insumo = self.__tela_insumo.seleciona_insumo()
+        # Monta lista de dicionários para exibir na GUI
+        dados = self._montar_dados_insumo()
+
+        id_insumo = self.__tela_insumo.seleciona_insumo_gui(dados)
+        if id_insumo is None:
+            return
+
         insumo = self.pega_insumo_por_id(id_insumo)
 
-        if (insumo is not None):
+        if insumo is not None:
             self.__insumos.remove(insumo)
             self.lista_insumo()
         else:
@@ -170,3 +158,25 @@ class ControladorInsumo():
         continua = True
         while continua:
             lista_opcoes[self.__tela_insumo.tela_opcoes_gui()]()
+
+    def _montar_dados_insumo(self):
+        dados = []
+        for insumo in self.__insumos:
+            dado = {
+                "nome": insumo.nome,
+                "id": insumo.id,
+                "valor": insumo.valor
+            }
+            if isinstance(insumo, Fertilizante):
+                dado["fonte"] = insumo.fonte
+            elif isinstance(insumo, Defensivo):
+                dado["funcao"] = insumo.funcao
+            elif isinstance(insumo, Semente):
+                dado["cultura"] = insumo.cultura
+                dado["tecnologia"] = insumo.tecnologia
+            elif isinstance(insumo, Implemento):
+                dado["processo"] = insumo.processo
+                dado["tipo"] = insumo.tipo
+            dados.append(dado)
+
+        return dados

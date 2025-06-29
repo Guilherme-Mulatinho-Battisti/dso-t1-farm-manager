@@ -32,6 +32,7 @@ def get_layout_opcoes(titulo, opcoes: list, opcao_retorno):
 
 def get_layout_listagem(titulo, lista_itens, opcao_retorno):
     layout = [
+        [sg.Push(), sg.Button(opcao_retorno, size=(20, 1), font=("Courier New", 14, "bold"), button_color=("white", "red")), sg.Push()],
         [sg.Push(), sg.Text(titulo, font=("Helvetica", 16)), sg.Push()],
         [
             sg.Multiline(
