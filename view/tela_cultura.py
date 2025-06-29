@@ -71,6 +71,46 @@ class TelaCultura(TelaBase):
             "num_aplicacao": num_aplicacao,
         }
 
+    def pega_dados_cultura_gui(self) -> dict:
+        layout = [
+            [sg.Text("DADOS DA CULTURA", font=("Arial", 14, "bold"))],
+            [sg.Text("Nome:"), sg.Input(key="-NOME-")],
+            [sg.Text("ID:"), sg.Input(key="-ID-")],
+            [sg.Text("Dose de Semente:"), sg.Input(key="-DOSE_SEMENTE-")],
+            [sg.Text("Dose de Fertilizante:"), sg.Input(key="-DOSE_FERTILIZANTE-")],
+            [sg.Text("Dose de Defensivo:"), sg.Input(key="-DOSE_DEFENSIVO-")],
+            [sg.Text("Tempo de Crescimento (meses):"), sg.Input(key="-TEMP_CRESCIMENTO-")],
+            [sg.Text("Numero de Aplicações:"), sg.Input(key="-NUM_APLICACAO-")],
+            [sg.Button("Confirmar", key="-CONFIRMAR-"), sg.Button("Cancelar", key="-CANCELAR-")]
+        ]
+        window = get_janela("Dados da Cultura", layout)
+        dados = None
+        while True:
+            event, values = window.read()
+            if event in (sg.WIN_CLOSED, "-CANCELAR-"):
+                break
+            if event == "-CONFIRMAR-":
+                # Validação simples
+                if not values["-NOME-"] or not values["-ID-"]:
+                    sg.popup_error("Nome e ID são obrigatórios!")
+                    continue
+                try:
+                    dados = {
+                        "nome": values["-NOME-"],
+                        "id": int(values["-ID-"]),
+                        "dose_semente": float(values["-DOSE_SEMENTE-"]),
+                        "dose_fertilizante": float(values["-DOSE_FERTILIZANTE-"]),
+                        "dose_defensivo": float(values["-DOSE_DEFENSIVO-"]),
+                        "temp_crescimento": int(values["-TEMP_CRESCIMENTO-"]),
+                        "num_aplicacao": int(values["-NUM_APLICACAO-"])
+                    }
+                except Exception:
+                    sg.popup_error("Preencha todos os campos corretamente!")
+                    continue
+                break
+        window.close()
+        return dados
+
     def mostra_cultura(self, dados_cultura) -> None:
         print("Nome da Cultura: ", dados_cultura["nome"])
         print("ID da Cultura: ", dados_cultura["id"])
@@ -81,28 +121,52 @@ class TelaCultura(TelaBase):
         print("Numero de Aplicações: ", dados_cultura["num_aplicacao"])
         print("\n")
 
-    def mostra_culturas_gui(self, culturas: list) -> None:
-
-        if not culturas:
-            sg.popup("Nenhuma cultura encontrada. Retornando...")
-            return
-
-        layout = get_layout_listagem("Culturas",
-                                     [
-                                         f"Nome: {cultura['nome']}, ID: {cultura['id']}/nDose da Cultura: {cultura["dose_semente"]}, "
-                                         f"Dose de Fertilizante: {cultura['dose_fertilizante']}, Dose de Defensivo: {cultura['dose_defensivo']}"
-                                         f"/nTempo de Crescimento: {cultura['temp_crescimento']}, Numero de Aplicações: {cultura['num_aplicacao']}"
-                                         for cultura in culturas],
-                                     "Retornar")
-
-        window = get_janela("Culturas", layout)
-
-        window.read()
-        window.close()
-
     def seleciona_cultura(self) -> int:
         id = input("ID do cultura que deseja selecionar: ")
         return id
 
+    def seleciona_cultura_gui(self, culturas: list) -> int:
+        layout = [[sg.Text("Selecione a cultura desejada:", font=("Arial", 14, "bold"))]]
+        for cultura in culturas:
+            texto = f"ID: {cultura['id']} | Nome: {cultura['nome']}"
+            layout.append([
+                sg.Text(texto, size=(40, 1)),
+                sg.Button("Selecionar", key=f"-SEL-{cultura['id']}-")
+            ])
+        layout.append([sg.Button("Cancelar", key="-CANCELAR-")])
+        window = get_janela("Selecionar Cultura", layout)
+        id_cultura = None
+        while True:
+            event, values = window.read()
+            if event in (sg.WIN_CLOSED, "-CANCELAR-"):
+                break
+            for cultura in culturas:
+                if event == f"-SEL-{cultura['id']}-":
+                    id_cultura = cultura['id']
+                    break
+            if id_cultura is not None:
+                break
+        window.close()
+        return id_cultura
+
     def mostra_mensagem(self, msg) -> None:
         print(msg)
+
+    def mostra_mensagem_gui(self, msg):
+        sg.popup(msg, title="Mensagem", keep_on_top=True)
+
+    def mostra_culturas_gui(self, culturas: list) -> None:
+        if not culturas:
+            sg.popup("Nenhuma cultura encontrada. Retornando...")
+            return
+        linhas = []
+        for cultura in culturas:
+            linhas.append(
+                f"Nome: {cultura['nome']}, ID: {cultura['id']}\nDose de Semente: {cultura['dose_semente']}, "
+                f"Dose de Fertilizante: {cultura['dose_fertilizante']}, Dose de Defensivo: {cultura['dose_defensivo']}\n"
+                f"Tempo de Crescimento: {cultura['temp_crescimento']}, Numero de Aplicações: {cultura['num_aplicacao']}"
+            )
+        layout = get_layout_listagem("Culturas", linhas, "Retornar")
+        window = get_janela("Culturas", layout)
+        window.read()
+        window.close()
