@@ -1,4 +1,4 @@
-from view.tela_base import get_layout, TelaBase, get_janela
+from view.tela_base import get_layout_opcoes, TelaBase, get_janela, get_layout_listagem
 
 
 class TelaFazenda(TelaBase):
@@ -25,7 +25,7 @@ class TelaFazenda(TelaBase):
         window, opcao = None, None
 
         try:
-            layout = get_layout(
+            layout = get_layout_opcoes(
                 titulo="Fazendas",
                 opcoes=["Incluir Fazenda", "Gerenciar Fazenda", "Alterar Fazenda", "Listar Fazendas",
                         "Excluir Fazenda"],
@@ -130,6 +130,26 @@ class TelaFazenda(TelaBase):
         print("Cultura: ", dados_fazenda["cultura"])
         print("Estoque: ", dados_fazenda["estoque"])
         print("\n")
+
+    def mostra_fazenda_gui(self, dado_fazendas: dict) -> None:
+        layout = get_layout_listagem(
+            "Fazenda",
+            lista_itens=[
+                f"Nome: {dado['nome']}"
+                f"ID: {dado['id']}"
+                f"Endereço: {dado['endereco']}"
+                f"Área Plantada: {dado['area_plantada']} ha"
+                f"Cultura: {dado['cultura']}"
+                f"Estoque: {dado['estoque']}"
+                for dado in dado_fazendas
+            ],
+            opcao_retorno="Retornar"
+        )
+
+        window = get_janela("Fazenda", layout)
+
+        window.read()
+        window.close()
 
     def seleciona_fazenda(self) -> int:
         while True:

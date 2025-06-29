@@ -1,7 +1,8 @@
-from view.tela_base import get_layout, get_janela
+from view.tela_base import get_layout_opcoes, get_janela, TelaBase, get_layout_listagem
+import FreeSimpleGUI as sg
 
 
-class TelaInsumo:
+class TelaInsumo(TelaBase):
     def tela_opcoes(self):
         print("\n")
         while True:
@@ -30,9 +31,9 @@ class TelaInsumo:
 
         try:
 
-            layout = get_layout("Insumos",
-                                opcoes=["Incluir Insumo", "Alterar Insumo", "Listar Insumo", "Excluir Insumo"],
-                                opcao_retorno="Retornar")
+            layout = get_layout_opcoes("Insumos",
+                                       opcoes=["Incluir Insumo", "Alterar Insumo", "Listar Insumo", "Excluir Insumo"],
+                                       opcao_retorno="Retornar")
 
             window = get_janela("Insumos", layout)
             event, values = window.read()
@@ -48,9 +49,9 @@ class TelaInsumo:
             else:
                 print("Retornado!")
                 opcao = 0
-        except ValueError:
-            print("Entrada inválida. Digite apenas números.")
+        except ValueError as e:
             opcao = 0
+            raise Exception(f"Erro ao processar a opção: {e}") from e
         finally:
             if window is not None:
                 window.close()
@@ -80,6 +81,40 @@ class TelaInsumo:
                     print("Opção inválida. Digite um número de 0 a 4.\n")
             except ValueError:
                 print("Entrada inválida. Digite apenas números.\n")
+
+    def tela_opcoes_insumos_gui(self):
+        window, opcao = None, None
+
+        try:
+            layout = get_layout_opcoes("Tipos de Insumo",
+                                       opcoes=["Fertilizante", "Defensivo", "Semente", "Implemento"],
+                                       opcao_retorno="Retornar")
+
+            window = get_janela("Tipos de Insumo", layout)
+            event, values = window.read()
+
+            if event == "Fertilizante":
+                opcao = 1
+            elif event == "Defensivo":
+                opcao = 2
+            elif event == "Semente":
+                opcao = 3
+            elif event == "Implemento":
+                opcao = 4
+            else:
+                print("Retornado!")
+                opcao = 0
+        except ValueError as e:
+            opcao = 0
+            raise Exception(f"Erro ao processar a opção: {e}") from e
+        finally:
+            if window is not None:
+                window.close()
+            if opcao is None:
+                print("Nenhuma opção selecionada. Retornando...")
+                opcao = 0
+
+        return opcao
 
     def pega_dados_insumo(self, tipo_insumo=None):
         print("-------- DADOS DO INSUMO ----------")
@@ -177,6 +212,21 @@ class TelaInsumo:
         for key, value in dados_insumo.items():
             print(f"{key.upper()}: {value}")
 
+    def mostra_insumo_gui(self, dados_insumo: list) -> None:
+        linhas = []
+
+        for insumo in dados_insumo:
+            for k, v in insumo.items():
+                linhas.append(f"{k.capitalize()}: {v}")
+            linhas.append("")
+        layout = get_layout_listagem("Detalhes do Insumo",
+                                     linhas,
+                                     opcao_retorno="Retornar")
+
+        window = get_janela("Insumos", layout)
+        window.read()
+        window.close()
+
     def seleciona_insumo(self):
         while True:
             entrada = input("Código do insumo que deseja selecionar: ").strip()
@@ -189,4 +239,4 @@ class TelaInsumo:
             return int(entrada)
 
     def mostra_mensagem(self, msg):
-        print(msg)
+        sg.popup(msg, title="Mensagem", keep_on_top=True)

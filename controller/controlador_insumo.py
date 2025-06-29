@@ -1,6 +1,7 @@
 from view.tela_insumo import TelaInsumo
 from model.insumo import Insumo, Defensivo, Fertilizante, Semente, Implemento
 
+
 class ControladorInsumo():
     def __init__(self, controlador_sistema):
         self.__insumos = []
@@ -13,7 +14,8 @@ class ControladorInsumo():
 
     def carrega_dados(self):
         # Sementes
-        self.__insumos.append(Semente(nome='Certificada RR', id=101, valor=100, cultura='Soja', tecnologia='Não Transgenica'))
+        self.__insumos.append(
+            Semente(nome='Certificada RR', id=101, valor=100, cultura='Soja', tecnologia='Não Transgenica'))
         self.__insumos.append(Semente(nome='VT Pro 2', id=102, valor=120, cultura='Milho', tecnologia='Transgenica'))
 
         # Fertilizantes
@@ -119,27 +121,29 @@ class ControladorInsumo():
             self.__tela_insumo.mostra_mensagem("\n")
             return
 
-        for insumo in self.__insumos:
+        dados = []
 
-            dados = {
+        for insumo in self.__insumos:
+            dado = {
                 "nome": insumo.nome,
                 "id": insumo.id,
                 "valor": insumo.valor
             }
 
             if isinstance(insumo, Fertilizante):
-                dados["fonte"] = insumo.fonte
+                dado["fonte"] = insumo.fonte
             elif isinstance(insumo, Defensivo):
-                dados["funcao"] = insumo.funcao
+                dado["funcao"] = insumo.funcao
             elif isinstance(insumo, Semente):
-                dados["cultura"] = insumo.cultura
-                dados["tecnologia"] = insumo.tecnologia
+                dado["cultura"] = insumo.cultura
+                dado["tecnologia"] = insumo.tecnologia
             elif isinstance(insumo, Implemento):
-                dados["processo"] = insumo.processo
-                dados["tipo"] = insumo.tipo
+                dado["processo"] = insumo.processo
+                dado["tipo"] = insumo.tipo
 
-            self.__tela_insumo.mostra_insumo(dados)
-            self.__tela_insumo.mostra_mensagem("\n")
+            dados.append(dado)
+
+        self.__tela_insumo.mostra_insumo_gui(dados)
 
     def excluir_insumo(self):
         self.lista_insumo()

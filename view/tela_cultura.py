@@ -1,7 +1,8 @@
-from view.tela_base import get_layout, get_janela
+from view.tela_base import get_layout_opcoes, get_janela, TelaBase, get_layout_listagem
+import FreeSimpleGUI as sg
 
 
-class TelaCultura:
+class TelaCultura(TelaBase):
     def tela_opcoes(self) -> int:
         print("-------- CULTURAS ----------")
         print("Escolha a opcao")
@@ -17,9 +18,9 @@ class TelaCultura:
     def tela_opcoes_gui(self) -> int:
         window, opcao = None, None
         try:
-            layout = get_layout("Culturas",
-                                ["Incluir Cultura", "Alterar Cultura", "Listar Culturas", "Excluir Cultura"],
-                                "Retornar")
+            layout = get_layout_opcoes("Culturas",
+                                       ["Incluir Cultura", "Alterar Cultura", "Listar Culturas", "Excluir Cultura"],
+                                       "Retornar")
 
             window = get_janela("Culturas", layout)
 
@@ -79,6 +80,25 @@ class TelaCultura:
         print("Tempo de Crescimento: ", dados_cultura["temp_crescimento"])
         print("Numero de Aplicações: ", dados_cultura["num_aplicacao"])
         print("\n")
+
+    def mostra_culturas_gui(self, culturas: list) -> None:
+
+        if not culturas:
+            sg.popup("Nenhuma cultura encontrada. Retornando...")
+            return
+
+        layout = get_layout_listagem("Culturas",
+                                     [
+                                         f"Nome: {cultura['nome']}, ID: {cultura['id']}/nDose da Cultura: {cultura["dose_semente"]}, "
+                                         f"Dose de Fertilizante: {cultura['dose_fertilizante']}, Dose de Defensivo: {cultura['dose_defensivo']}"
+                                         f"/nTempo de Crescimento: {cultura['temp_crescimento']}, Numero de Aplicações: {cultura['num_aplicacao']}"
+                                         for cultura in culturas],
+                                     "Retornar")
+
+        window = get_janela("Culturas", layout)
+
+        window.read()
+        window.close()
 
     def seleciona_cultura(self) -> int:
         id = input("ID do cultura que deseja selecionar: ")

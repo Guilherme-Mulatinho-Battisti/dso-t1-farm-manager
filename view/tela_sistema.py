@@ -1,5 +1,5 @@
 import FreeSimpleGUI as sg
-from .tela_base import TelaBase, get_layout, get_janela
+from .tela_base import TelaBase, get_layout_opcoes, get_janela
 
 
 class TelaSistema(TelaBase):
@@ -28,7 +28,7 @@ class TelaSistema(TelaBase):
         try:
             sg.theme("NeonGreen1")
             
-            layout = get_layout(
+            layout = get_layout_opcoes(
                 titulo="Escolha uma opção",
                 opcoes=["Insumo", "Cultura", "Fazenda", "Porto"],
                 opcao_retorno="Finalizar sistema",
@@ -51,8 +51,8 @@ class TelaSistema(TelaBase):
                 opcao = 4
 
         except Exception as e:
-            print(f"Erro ao processar a opção: {e}")
             opcao = 0
+            raise Exception(f"Erro ao processar a opção: {e}") from e
         finally:
             if window is not None:
                 window.close()

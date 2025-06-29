@@ -99,7 +99,7 @@ class ControladorFazenda():
             return
 
         for fazenda in self.__fazendas:
-            self.__tela_fazenda.mostra_fazenda({"nome": fazenda.nome, "id": fazenda.id,
+            self.__tela_fazenda.mostra_fazenda_gui({"nome": fazenda.nome, "id": fazenda.id,
                                                 'endereco': fazenda.endereco,
                                                 "cultura": fazenda.cultura.nome,
                                                 "area_plantada": fazenda.area_plantada,

@@ -1,5 +1,5 @@
 import FreeSimpleGUI as sg
-from .tela_base import TelaBase, get_layout, get_janela
+from .tela_base import TelaBase, get_layout_opcoes, get_janela, get_layout_listagem
 
 
 class TelaPorto(TelaBase):
@@ -24,7 +24,7 @@ class TelaPorto(TelaBase):
         window, opcao = None, None
         try:
 
-            layout = get_layout(
+            layout = get_layout_opcoes(
                 titulo="Portos",
                 opcoes=["Gerenciar Estoque", "Alterar Porto", "Mostrar Portos"],
                 opcao_retorno="Retornar",
@@ -57,7 +57,6 @@ class TelaPorto(TelaBase):
 
         return opcao
 
-
     def tela_gerenciador_estoque_porto(self) -> int:
         while True:
             print("-------- GERENCIADOR ESTOQUE PORTO ----------")
@@ -74,25 +73,36 @@ class TelaPorto(TelaBase):
                 print("Entrada inválida. Digite um número inteiro.")
 
     def tela_gerenciador_estoque_porto_gui(self) -> int:
-        layout = get_layout(
-            titulo="Gerenciador Estoque Porto",
-            opcoes=["Gerenciar Estoque"],
-            opcao_retorno="Retornar",
-        )
+        window, opcao = None, None
+        try:
+            layout = get_layout_opcoes(
+                titulo="Gerenciador Estoque Porto",
+                opcoes=["Gerenciar Estoque"],
+                opcao_retorno="Retornar",
+            )
 
-        while True:
             window = get_janela("Gerenciador Estoque Porto", layout)
 
             event, values = window.read()
-            opcao = None
-            if event == sg.WIN_CLOSED or event == "Retornar":
+
+            if event == "Gerenciar Estoque":
+                opcao = 1
+            else:
                 print("Retornado!")
                 opcao = 0
-            elif event == "Gerenciar Estoque":
-                opcao = 1
 
-            window.close()
-            return opcao
+        except Exception as e:
+            opcao = 0
+            raise Exception(f"Erro ao processar a opção: {e}") from e
+
+        finally:
+            if window is not None:
+                window.close()
+            if opcao is None:
+                print("Nenhuma opção selecionada. Retornando...")
+                opcao = 0
+
+        return opcao
 
     def pega_dados_porto(self) -> dict:
         print("-------- DADOS PORTO ----------")
@@ -127,6 +137,21 @@ class TelaPorto(TelaBase):
         print("Endereço: ", dados_porto["endereco"])
         print("Estoque: ", dados_porto["estoque"])
         print("\n")
+
+    def mostra_portos_gui(self, portos: dict) -> None:
+        if not portos:
+            sg.popup("Nenhum porto cadastrado.")
+            return
+
+        layout = get_layout_listagem(
+            "Portos",
+            [f"Nome: {porto['nome']}\nEndereço: {porto['endereco']}\nEstoque: {porto['estoque']}" for porto in portos],
+            "Retornar"
+        )
+
+        window = get_janela("Portos", layout)
+        window.read()
+        window.close()
 
     def mostra_mensagem(self, msg) -> None:
         print(msg)

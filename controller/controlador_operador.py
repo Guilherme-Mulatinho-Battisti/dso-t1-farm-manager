@@ -50,7 +50,7 @@ class ControladorOperador():
         total_semente_necessaria = dose_semente * area
 
         # Seleciona semente
-        self.__controlador_sistema.controlador_estoque.mostra_estoque(fazenda.estoque)
+        self.__controlador_sistema.controlador_estoque.mostra_estoque_gui(fazenda.estoque)
         semente_selecionada = self.__tela_operador.seleciona_insumo()
         if not semente_selecionada:
             self.__tela_operador.mostra_mensagem("Semente indisponivel, por favor compre mais.")
@@ -64,7 +64,7 @@ class ControladorOperador():
             return
 
         # Seleciona implemento
-        self.__controlador_sistema.controlador_estoque.mostra_estoque(fazenda.estoque)
+        self.__controlador_sistema.controlador_estoque.mostra_estoque_gui(fazenda.estoque)
         implemento_selecionado = self.__tela_operador.seleciona_insumo()
 
         if not implemento_selecionado:
@@ -98,7 +98,7 @@ class ControladorOperador():
         total_fertilizante_necessario = dose_fertilizante * area
 
         # Seleciona fertilizante
-        self.__controlador_sistema.controlador_estoque.mostra_estoque(fazenda.estoque)
+        self.__controlador_sistema.controlador_estoque.mostra_estoque_gui(fazenda.estoque)
         fertilizante_id = self.__tela_operador.seleciona_insumo()
         fertilizante_selecionado = fazenda_estoque.get(fertilizante_id)
 
@@ -135,7 +135,7 @@ class ControladorOperador():
         total_defensivo_necessario = dose_defensivo * area
 
         # Seleciona defensivo
-        self.__controlador_sistema.controlador_estoque.mostra_estoque(fazenda.estoque)
+        self.__controlador_sistema.controlador_estoque.mostra_estoque_gui(fazenda.estoque)
         defensivo_id = self.__tela_operador.seleciona_insumo()
         defensivo_selecionado = fazenda_estoque.get(defensivo_id)
 

@@ -73,13 +73,16 @@ class ControladorCultura():
             self.__tela_cultura.mostra_mensagem("ATENCAO: lista de culturas vazia")
             return
 
+        dados_saida = []
         for cultura in self.__culturas_DAO:
-            self.__tela_cultura.mostra_cultura({"nome": cultura.nome, "id": cultura.id,
+            dados_saida.append({"nome": cultura.nome, "id": cultura.id,
                                                 "dose_semente": cultura.dose_semente,
                                                 "dose_fertilizante": cultura.dose_fertilizante,
                                                 "dose_defensivo": cultura.dose_defensivo,
                                                 "temp_crescimento": cultura.temp_crescimento,
                                                 "num_aplicacao": cultura.num_aplicacao})
+
+        self.__tela_cultura.mostra_culturas_gui(dados_saida)
 
     def excluir_cultura(self):
         self.listar_culturas()
@@ -101,4 +104,4 @@ class ControladorCultura():
 
         continua = True
         while continua:
-            lista_opcoes[self.__tela_cultura.tela_opcoes()]()
+            lista_opcoes[self.__tela_cultura.tela_opcoes_gui()]()

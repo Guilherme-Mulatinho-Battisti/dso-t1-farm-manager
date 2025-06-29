@@ -40,7 +40,7 @@ class ControladorPorto():
 
     def mostrar_porto(self):
         porto = self.__porto
-        self.__tela_porto.mostra_porto({"nome": porto.nome,
+        self.__tela_porto.mostra_portos_gui({"nome": porto.nome,
                                         'endereco': porto.endereco,
                                         "estoque": porto.estoque.estoque})
         return self.__porto

@@ -1,5 +1,9 @@
+from view.tela_base import get_janela, get_layout_opcoes, get_layout_listagem
+import FreeSimpleGUI as sg
+
+
 class TelaEstoque:
-    def tela_gerenciador_estoque(self) -> int:
+    def tela_opcoes(self) -> int:
         print("-------- GERENCIADOR DE ESTOQUE ----------")
         print("Escolha a opcao")
         print("1 - Adicionar Produto ao Estoque")
@@ -12,6 +16,51 @@ class TelaEstoque:
         opcao = int(input("Escolha a opcao: "))
         return opcao
 
+    def tela_opcoes_gui(self) -> int:
+        window, opcao = None, None
+
+        try:
+            layout = get_layout_opcoes(
+                titulo="Gerenciador de Estoque",
+                opcoes=[
+                    "Adicionar Produto ao Estoque",
+                    "Remover Produto do Estoque",
+                    "Mostrar Produtos no Estoque",
+                    "Alterar Estoque",
+                    "Limpar Estoque"
+                ],
+                opcao_retorno="Retornar"
+            )
+
+            window = get_janela("Gerenciador de Estoque", layout)
+            event, values = window.read()
+
+            if event == "Adicionar Produto ao Estoque":
+                opcao = 1
+            elif event == "Remover Produto do Estoque":
+                opcao = 2
+            elif event == "Mostrar Produtos no Estoque":
+                opcao = 3
+            elif event == "Alterar Estoque":
+                opcao = 4
+            elif event == "Limpar Estoque":
+                opcao = 5
+            else:
+                print("Retornado!")
+                opcao = 0
+
+        except Exception as e:
+            opcao = 0
+            raise Exception(f"Erro ao processar: {e}") from e
+        finally:
+            if window is not None:
+                window.close()
+            if opcao is None:
+                print("Nenhuma opção selecionada. Retornando...")
+                opcao = 0
+
+        return opcao
+
     def mostra_estoque(self, estoque: dict):
         print("\nProdutos no estoque:")
         print(f"ID do Estoque: {estoque['id']}")
@@ -21,6 +70,22 @@ class TelaEstoque:
         for produto, quantidade in estoque["estoque"].items():
             print(f"- Produto: {produto} | Quantidade: {quantidade}")
         print("\n")
+
+    def mostra_estoque_gui(self, estoque: dict) -> None:
+        if not estoque["estoque"]:
+            sg.popup("Estoque vazio.")
+            return
+
+        layout = get_layout_listagem(
+            titulo="Produtos no Estoque - ID: " + estoque["id"],
+            lista_itens=
+            [f"Produto: {produto} | Quantidade: {quantidade}" for produto, quantidade in estoque["estoque"].items()],
+            opcao_retorno="Retornar"
+        )
+
+        window = get_janela("Estoque", layout)
+        window.read()
+        window.close()
 
     def seleciona_produto(self, estoque: dict) -> str:
         produto = input("Digite o nome do produto que deseja alterar: ").strip()
