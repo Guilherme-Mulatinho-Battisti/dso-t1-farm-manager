@@ -12,6 +12,14 @@ class ControladorCultura():
         self.__controlador_sistema = controlador_sistema
         self.__tela_cultura = TelaCultura()
         # self.carrega_dados()
+        
+    @property
+    def tela_cultura(self):
+        return self.__tela_cultura
+
+    @property
+    def culturas_DAO(self):
+        return self.__culturas_DAO
 
     # def carrega_dados(self):
     #     """ Método para carregar dados de culturas pré-definidas. """
@@ -175,3 +183,6 @@ class ControladorCultura():
         continua = True
         while continua:
             lista_opcoes[self.__tela_cultura.tela_opcoes_gui()]()
+
+    def get_tela_cultura(self):
+        return self.__tela_cultura

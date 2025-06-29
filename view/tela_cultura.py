@@ -54,7 +54,7 @@ class TelaCultura(TelaBase):
     def pega_dados_cultura(self) -> dict:
         print("-------- DADOS CULTURA ----------")
         nome = input("Nome: ")
-        id = input("ID: ")
+        cultura_id = input("ID: ")
         dose_semente = input("Dose de Semente: ")
         dose_fertilizante = input("Dose de Fertilizante: ")
         dose_defensivo = input("Dose de Defensivo: ")
@@ -63,7 +63,7 @@ class TelaCultura(TelaBase):
 
         return {
             "nome": nome,
-            "id": id,
+            "id": cultura_id,
             "dose_semente": dose_semente,
             "dose_fertilizante": dose_fertilizante,
             "dose_defensivo": dose_defensivo,
@@ -104,7 +104,7 @@ class TelaCultura(TelaBase):
                         "temp_crescimento": int(values["-TEMP_CRESCIMENTO-"]),
                         "num_aplicacao": int(values["-NUM_APLICACAO-"])
                     }
-                except Exception:
+                except ValueError:
                     sg.popup_error("Preencha todos os campos corretamente!")
                     continue
                 break
@@ -122,8 +122,7 @@ class TelaCultura(TelaBase):
         print("\n")
 
     def seleciona_cultura(self) -> int:
-        id = input("ID do cultura que deseja selecionar: ")
-        return id
+        return int(input("Digite o ID da cultura que deseja selecionar: "))
 
     def seleciona_cultura_gui(self, culturas: list) -> int:
         layout = [[sg.Text("Selecione a cultura desejada:", font=("Arial", 14, "bold"))]]

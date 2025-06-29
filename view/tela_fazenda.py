@@ -1,4 +1,7 @@
+from typing import Any
+
 from view.tela_base import get_layout_opcoes, TelaBase, get_janela, get_layout_listagem
+import FreeSimpleGUI as sg
 
 
 class TelaFazenda(TelaBase):
@@ -131,23 +134,86 @@ class TelaFazenda(TelaBase):
         print("Estoque: ", dados_fazenda["estoque"])
         print("\n")
 
-    def mostra_fazenda_gui(self, dado_fazendas: dict) -> None:
-        layout = get_layout_listagem(
-            "Fazenda",
-            lista_itens=[
-                f"Nome: {dado['nome']}"
-                f"ID: {dado['id']}"
-                f"Endereço: {dado['endereco']}"
-                f"Área Plantada: {dado['area_plantada']} ha"
-                f"Cultura: {dado['cultura']}"
-                f"Estoque: {dado['estoque']}"
-                for dado in dado_fazendas
-            ],
-            opcao_retorno="Retornar"
-        )
+    def pega_dados_fazenda_gui(self) -> dict:
+        layout = [
+            [sg.Text("DADOS DA FAZENDA", font=("Arial", 14, "bold"))],
+            [sg.Text("Nome:"), sg.Input(key="-NOME-")],
+            [sg.Text("ID:"), sg.Input(key="-ID-")],
+            [sg.Text("Área Plantada (ha):"), sg.Input(key="-AREA-")],
+            [sg.Text("País:"), sg.Input(key="-PAIS-")],
+            [sg.Text("Estado:"), sg.Input(key="-ESTADO-")],
+            [sg.Text("Cidade:"), sg.Input(key="-CIDADE-")],
+            [sg.Button("Confirmar", key="-CONFIRMAR-"), sg.Button("Cancelar", key="-CANCELAR-")]
+        ]
+        window = get_janela("Dados da Fazenda", layout)
+        dados = None
+        while True:
+            event, values = window.read()
+            if event in (sg.WIN_CLOSED, "-CANCELAR-"):
+                break
+            if event == "-CONFIRMAR-":
+                if not values["-NOME-"] or not values["-ID-"]:
+                    sg.popup_error("Nome e ID são obrigatórios!")
+                    continue
+                try:
+                    dados = {
+                        "nome": values["-NOME-"],
+                        "id": int(values["-ID-"]),
+                        "area_plantada": int(values["-AREA-"]),
+                        "pais": values["-PAIS-"],
+                        "estado": values["-ESTADO-"],
+                        "cidade": values["-CIDADE-"]
+                    }
+                except Exception:
+                    sg.popup_error("Preencha todos os campos corretamente!")
+                    continue
+                break
+        window.close()
+        return dados
 
-        window = get_janela("Fazenda", layout)
+    def seleciona_fazenda_gui(self, fazendas: list) -> Any | None:
+        if not fazendas:
+            sg.popup("Nenhuma fazenda cadastrada. Retornando...")
+            return None
 
+        layout = [[sg.Text("Selecione a fazenda desejada:", font=("Arial", 14, "bold"))]]
+        for fazenda in fazendas:
+            texto = f"ID: {fazenda['id']} | Nome: {fazenda['nome']}"
+            layout.append([
+                sg.Text(texto, size=(40, 1)),
+                sg.Button("Selecionar", key=f"-SEL-{fazenda['id']}-")
+            ])
+        layout.append([sg.Button("Cancelar", key="-CANCELAR-")])
+        window = get_janela("Selecionar Fazenda", layout)
+        id_fazenda = None
+        while True:
+            event, values = window.read()
+            if event in (sg.WIN_CLOSED, "-CANCELAR-"):
+                break
+            for fazenda in fazendas:
+                if event == f"-SEL-{fazenda['id']}-":
+                    id_fazenda = fazenda['id']
+                    break
+            if id_fazenda is not None:
+                break
+        window.close()
+        return id_fazenda
+
+    def mostra_mensagem_gui(self, msg):
+        sg.popup(msg, title="Mensagem", keep_on_top=True)
+
+    def mostra_fazenda_gui(self, dados_fazendas: list) -> None:
+        if not dados_fazendas:
+            sg.popup("Nenhuma fazenda encontrada. Retornando...")
+            return
+        linhas = []
+        for dado in dados_fazendas:
+            linhas.append(
+                f"Nome: {dado['nome']}\nID: {dado['id']}\nEndereço: {dado['pais']}, {dado['estado']}, {dado['cidade']}\n"
+                f"Área Plantada: {dado['area_plantada']} ha\nCultura: {dado.get('cultura', '')}\nEstoque: {dado.get('estoque', '')}"
+            )
+        layout = get_layout_listagem("Fazendas", linhas, "Retornar")
+        window = get_janela("Fazendas", layout)
         window.read()
         window.close()
 
