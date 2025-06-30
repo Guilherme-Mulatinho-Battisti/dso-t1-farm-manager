@@ -4,7 +4,7 @@ from datetime import datetime
 from functools import partial
 
 
-class ControladorEstoque():
+class ControladorEstoque:
 
     def __init__(self, controlador_sistema):
         self.__estoques = []
@@ -22,8 +22,29 @@ class ControladorEstoque():
 
     def adicionar_produto_ao_estoque(self, estoque):
         insumos = self.__controlador_sistema.controlador_insumo.retorna_insumos()
+        if not insumos:
+            self.__tela_estoque.mostra_mensagem("Não há insumos cadastrados.")
+            return
         nomes_insumos = [insumo.nome for insumo in insumos]
+
         self.__controlador_sistema.controlador_insumo.lista_insumo()
+
+        dados = self.__tela_estoque.pega_dados_produto_gui(nomes_insumos)
+        if not dados or not dados.get("produto"):
+            return
+        produto = dados["produto"]
+        quantidade = dados.get("quantidade")
+        if produto not in nomes_insumos:
+            self.__tela_estoque.mostra_mensagem("Produto inválido. Escolha um dos insumos cadastrados.")
+            return
+        
+        try:
+            quantidade = int(quantidade)
+            estoque.estoque[produto] = quantidade
+            self.registrar_log(estoque, "ADICIONADO", produto, quantidade)
+            self.__tela_estoque.mostra_mensagem(f"Produto '{produto}' adicionado/atualizado com sucesso.")
+        except (ValueError, TypeError):
+            self.__tela_estoque.mostra_mensagem("Quantidade inválida.")
         
         while True:
             produto = self.__tela_estoque.seleciona_produto()
@@ -44,8 +65,8 @@ class ControladorEstoque():
             self.__tela_estoque.mostra_mensagem("Estoque vazio.")
             return
 
-        self.__tela_estoque.mostra_estoque(estoque.estoque)
-        produto = self.__tela_estoque.seleciona_produto(estoque.estoque)
+        self.__tela_estoque.mostra_estoque_gui(estoque.estoque)
+        produto = self.__tela_estoque.seleciona_item_lista_gui(estoque.estoque)
 
         if produto in estoque.estoque:
             del estoque.estoque[produto]
@@ -63,9 +84,7 @@ class ControladorEstoque():
             self.__tela_estoque.mostra_mensagem("Estoque vazio.")
             return
 
-        self.mostra_estoque(estoque)
-
-        produto_selecionado = self.__tela_estoque.seleciona_produto(estoque.estoque)
+        produto_selecionado = self.__tela_estoque.seleciona_item_lista_gui(estoque.estoque)
         if produto_selecionado not in estoque.estoque:
             self.__tela_estoque.mostra_mensagem("Produto não encontrado.")
             return
@@ -90,7 +109,7 @@ class ControladorEstoque():
             self.__tela_estoque.mostra_mensagem("ATENÇÃO: estoque não existente")
             return
 
-        self.__tela_estoque.mostra_estoque({"id": estoque.id, "estoque": estoque.estoque})
+        self.__tela_estoque.mostra_estoque_gui({"id": estoque.id, "estoque": estoque.estoque})
 
     def limpar_estoque(self, estoque):
 
@@ -115,7 +134,7 @@ class ControladorEstoque():
         }
 
         while True:
-            opcao = self.__tela_estoque.tela_gerenciador_estoque()
+            opcao = self.__tela_estoque.tela_opcoes_gui()
             funcao = lista_opcoes.get(opcao)
             if funcao:
                 funcao()
