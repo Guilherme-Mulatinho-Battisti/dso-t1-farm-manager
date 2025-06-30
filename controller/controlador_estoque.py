@@ -24,7 +24,7 @@ class ControladorEstoque:
                 raise DadosInvalidosException("Estoque não pode ser nulo.")
             if not acao or not produto:
                 raise DadosInvalidosException("Ação e produto são obrigatórios.")
-                
+
             log_entry = {
                 "data_hora": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 "acao": acao,
@@ -32,7 +32,7 @@ class ControladorEstoque:
                 "quantidade": quantidade
             }
             estoque.log.append(log_entry)
-            
+
         except DadosInvalidosException as e:
             self.__tela_estoque.mostra_mensagem(f"ERRO no log: {str(e)}")
         except Exception as e:
@@ -42,11 +42,11 @@ class ControladorEstoque:
         try:
             if estoque is None:
                 raise DadosInvalidosException("Estoque não pode ser nulo.")
-                
+
             insumos = self.__controlador_sistema.controlador_insumo.retorna_insumos()
             if not insumos:
                 raise ListaVaziaException("Não há insumos cadastrados.")
-                
+
             nomes_insumos = [insumo.nome for insumo in insumos]
 
             self.__controlador_sistema.controlador_insumo.lista_insumo()
@@ -54,38 +54,68 @@ class ControladorEstoque:
             dados = self.__tela_estoque.pega_dados_produto_gui(nomes_insumos)
             if not dados or not dados.get("produto"):
                 raise OperacaoCanceladaException("Operação cancelada pelo usuário.")
-                
+
             produto = dados["produto"]
             quantidade = dados.get("quantidade")
-            
+
             if not quantidade:
                 raise DadosInvalidosException("Quantidade é obrigatória.")
-            
+
             if produto not in nomes_insumos:
                 raise ItemNaoEncontradoException("Produto inválido. Escolha um dos insumos cadastrados.")
-            
+
             try:
                 quantidade = int(quantidade)
                 if quantidade < 0:
                     raise DadosInvalidosException("Quantidade não pode ser negativa.")
-                    
+
                 estoque.estoque[produto] = quantidade
                 self.registrar_log(estoque, "ADICIONADO", produto, quantidade)
                 self.__tela_estoque.mostra_mensagem(f"Produto '{produto}' adicionado/atualizado com sucesso.")
-                
+
             except (ValueError, TypeError):
                 raise DadosInvalidosException("Quantidade deve ser um número válido.")
-                
+
         except (DadosInvalidosException, ListaVaziaException, OperacaoCanceladaException, ItemNaoEncontradoException) as e:
             self.__tela_estoque.mostra_mensagem(f"ATENÇÃO: {str(e)}")
         except Exception as e:
             self.__tela_estoque.mostra_mensagem(f"ERRO inesperado ao adicionar produto: {str(e)}")
+        dados = self.__tela_estoque.pega_dados_produto_gui(nomes_insumos)
+        if not dados or not dados.get("produto"):
+            return
+        produto = dados["produto"]
+        quantidade = dados.get("quantidade")
+        if produto not in nomes_insumos:
+            self.__tela_estoque.mostra_mensagem("Produto inválido. Escolha um dos insumos cadastrados.")
+            return
+
+        try:
+            quantidade = int(quantidade)
+            estoque.estoque[produto] = quantidade
+            self.registrar_log(estoque, "ADICIONADO", produto, quantidade)
+            self.__tela_estoque.mostra_mensagem(f"Produto '{produto}' adicionado/atualizado com sucesso.")
+        except (ValueError, TypeError):
+            self.__tela_estoque.mostra_mensagem("Quantidade inválida.")
+
+        while True:
+            produto = self.__tela_estoque.seleciona_item_lista_gui()
+            if not produto:
+                break
+            if produto not in nomes_insumos:
+                print("Produto inválido. Escolha um dos insumos cadastrados.")
+                continue
+            try:
+                quantidade = self.__tela_estoque.pega_nova_quantidade()
+                estoque.estoque[produto] = quantidade
+                self.registrar_log(estoque, "ADICIONADO", produto, quantidade)
+            except ValueError:
+                print("Quantidade inválida.")
 
     def remover_produto_do_estoque(self, estoque):
         try:
             if estoque is None:
                 raise DadosInvalidosException("Estoque não pode ser nulo.")
-                
+
             if not estoque.estoque:
                 raise ListaVaziaException("Estoque vazio.")
 
@@ -103,7 +133,7 @@ class ControladorEstoque:
                 self.__tela_estoque.mostra_mensagem(f"Produto '{produto}' removido com sucesso.")
             else:
                 raise ItemNaoEncontradoException("Produto não encontrado.")
-                
+
         except (DadosInvalidosException, ListaVaziaException, OperacaoCanceladaException, ItemNaoEncontradoException) as e:
             self.__tela_estoque.mostra_mensagem(f"ATENÇÃO: {str(e)}")
         except Exception as e:
@@ -120,7 +150,7 @@ class ControladorEstoque:
             produto_selecionado = self.__tela_estoque.seleciona_item_lista_gui(estoque.estoque)
             if not produto_selecionado:
                 raise OperacaoCanceladaException("Nenhum produto selecionado.")
-                
+
             if produto_selecionado not in estoque.estoque:
                 raise ItemNaoEncontradoException("Produto não encontrado.")
 
@@ -145,8 +175,8 @@ class ControladorEstoque:
                 raise OpcaoNaoExistenteException("Opção inválida.")
 
             self.__tela_estoque.mostra_mensagem("Produto atualizado com sucesso.")
-            
-        except (DadosInvalidosException, ListaVaziaException, OperacaoCanceladaException, 
+
+        except (DadosInvalidosException, ListaVaziaException, OperacaoCanceladaException,
                 ItemNaoEncontradoException, OpcaoNaoExistenteException) as e:
             self.__tela_estoque.mostra_mensagem(f"ATENÇÃO: {str(e)}")
         except Exception as e:
@@ -159,11 +189,11 @@ class ControladorEstoque:
 
             # Criar cópia dos dados do estoque sem passar o objeto original
             dados_estoque = {
-                "id": estoque.id, 
+                "id": estoque.id,
                 "estoque": dict(estoque.estoque) if estoque.estoque else {}
             }
             self.__tela_estoque.mostra_estoque_gui(dados_estoque)
-            
+
         except DadosInvalidosException as e:
             self.__tela_estoque.mostra_mensagem(f"ATENÇÃO: {str(e)}")
         except Exception as e:
@@ -173,7 +203,7 @@ class ControladorEstoque:
         try:
             if estoque is None:
                 raise DadosInvalidosException("Estoque não pode ser nulo.")
-                
+
             if not estoque.estoque:
                 raise ListaVaziaException("Estoque já está vazio.")
 
@@ -181,7 +211,7 @@ class ControladorEstoque:
             self.registrar_log(estoque, "LIMPO", "TODOS OS PRODUTOS")
             self.__tela_estoque.mostra_mensagem("Estoque limpo com sucesso.")
             self.mostra_estoque(estoque)
-            
+
         except (DadosInvalidosException, ListaVaziaException) as e:
             self.__tela_estoque.mostra_mensagem(f"ATENÇÃO: {str(e)}")
         except Exception as e:
@@ -194,7 +224,7 @@ class ControladorEstoque:
         try:
             if estoque is None:
                 raise DadosInvalidosException("Estoque não pode ser nulo.")
-                
+
             lista_opcoes = {
                 1: partial(self.adicionar_produto_ao_estoque, estoque),
                 2: partial(self.remover_produto_do_estoque, estoque),
@@ -212,12 +242,12 @@ class ControladorEstoque:
                         funcao()
                     else:
                         raise OpcaoNaoExistenteException(f"Opção {opcao} não existe.")
-                        
+
                 except OpcaoNaoExistenteException as e:
                     self.__tela_estoque.mostra_mensagem(f"ATENÇÃO: {str(e)}")
                 except Exception as e:
                     self.__tela_estoque.mostra_mensagem(f"ERRO inesperado no menu: {str(e)}")
-                    
+
         except DadosInvalidosException as e:
             self.__tela_estoque.mostra_mensagem(f"ERRO: {str(e)}")
         except Exception as e:
@@ -232,7 +262,7 @@ class ControladorEstoque:
             # Criar cópia dos dados do estoque sem passar o objeto original
             dados_estoque = dict(estoque.estoque) if estoque.estoque else {}
             self.__tela_estoque.mostra_estoque_gui(dados_estoque)
-            
+
         except DadosInvalidosException as e:
             self.__tela_estoque.mostra_mensagem(f"ATENÇÃO: {str(e)}")
         except Exception as e:

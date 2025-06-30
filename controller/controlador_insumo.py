@@ -45,7 +45,7 @@ class ControladorInsumo:
         elif isinstance(insumo, Implemento):
             return 4
         else:
-            self.__tela_insumo.mostra_mensagem("ATENCAO: Tipo de insumo desconhecido")
+            self.__tela_insumo.mostra_mensagem("ATENÇÃO: Tipo de insumo desconhecido.")
             return 0
 
     def pega_insumo_por_id(self, id_insumo: int) -> Any | None:
