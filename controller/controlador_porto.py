@@ -92,21 +92,31 @@ class ControladorPorto():
             if porto is None:
                 raise DadosInvalidosException("Porto não pode ser nulo.")
                 
+            # Criar cópia dos dados do endereço sem passar o objeto original
+            endereco_dados = {
+                "pais": porto.get_pais(),
+                "estado": porto.get_estado(),
+                "cidade": porto.get_cidade()
+            }
+            
+            # Criar cópia dos dados do estoque sem passar o objeto original
+            estoque_dados = dict(porto.estoque.estoque) if porto.estoque and porto.estoque.estoque else {}
+            
             dados = [{
-                "nome": porto.nome,
+                "nome": str(porto.nome),
                 "id": getattr(porto, "id", 0),
-                "endereco": porto.endereco,
-                "estoque": porto.estoque.estoque
+                "endereco": endereco_dados,
+                "estoque": estoque_dados
             }]
             self.__tela_porto.mostra_portos_gui(dados)
-            return self.__porto
+            return True
             
         except DadosInvalidosException as e:
             self.__tela_porto.mostra_mensagem_gui(f"ATENÇÃO: {str(e)}")
-            return None
+            return False
         except Exception as e:
             self.__tela_porto.mostra_mensagem_gui(f"ERRO inesperado ao mostrar porto: {str(e)}")
-            return None
+            return False
 
     def gerenciar_estoque_porto(self):
         try:

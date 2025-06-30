@@ -36,7 +36,23 @@ class ControladorCultura():
     def pega_cultura_por_id(self):
         while True:
             try:
-                id_cultura = int(self.__tela_cultura.seleciona_cultura_gui(self.__culturas_DAO.get_all()))
+                # Criar cópia dos dados das culturas sem passar objetos originais
+                culturas = list(self.__culturas_DAO.get_all())
+                dados_culturas = []
+                for cultura in culturas:
+                    dados_culturas.append({
+                        "id": cultura.id,
+                        "nome": cultura.nome,
+                        "dose_semente": getattr(cultura, 'dose_semente', 0),
+                        "dose_fertilizante": getattr(cultura, 'dose_fertilizante', 0),
+                        "dose_defensivo": getattr(cultura, 'dose_defensivo', 0)
+                    })
+                
+                resultado = self.__tela_cultura.seleciona_cultura_gui(dados_culturas)
+                if resultado is None:
+                    self.__tela_cultura.mostra_mensagem("Seleção cancelada. Tente novamente.")
+                    continue
+                id_cultura = int(resultado)
                 break
             except ValueError:
                 self.__tela_cultura.mostra_mensagem("ID inválido. Digite um número inteiro.")

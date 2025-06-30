@@ -35,3 +35,15 @@ class Porto:
     def alterar_endereco(self, pais: str, estado: str, cidade: str) -> None:
         """Método para alterar o endereço do porto"""
         self.__endereco = Endereco(pais, estado, cidade)
+
+    def get_pais(self) -> str:
+        """Retorna o país do endereço"""
+        return self.__endereco.pais
+
+    def get_estado(self) -> str:
+        """Retorna o estado do endereço"""
+        return self.__endereco.estado
+
+    def get_cidade(self) -> str:
+        """Retorna a cidade do endereço"""
+        return self.__endereco.cidade

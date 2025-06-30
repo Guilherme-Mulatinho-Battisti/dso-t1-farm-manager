@@ -89,8 +89,10 @@ class ControladorEstoque:
             if not estoque.estoque:
                 raise ListaVaziaException("Estoque vazio.")
 
-            self.__tela_estoque.mostra_estoque_gui(estoque.estoque)
-            produto = self.__tela_estoque.seleciona_item_lista_gui(estoque.estoque)
+            # Criar cópia dos dados do estoque para a tela
+            dados_estoque = dict(estoque.estoque)
+            self.__tela_estoque.mostra_estoque_gui(dados_estoque)
+            produto = self.__tela_estoque.seleciona_item_lista_gui(dados_estoque)
 
             if not produto:
                 raise OperacaoCanceladaException("Nenhum produto selecionado.")
@@ -155,7 +157,12 @@ class ControladorEstoque:
             if estoque is None:
                 raise DadosInvalidosException("Estoque não pode ser nulo.")
 
-            self.__tela_estoque.mostra_estoque_gui({"id": estoque.id, "estoque": estoque.estoque})
+            # Criar cópia dos dados do estoque sem passar o objeto original
+            dados_estoque = {
+                "id": estoque.id, 
+                "estoque": dict(estoque.estoque) if estoque.estoque else {}
+            }
+            self.__tela_estoque.mostra_estoque_gui(dados_estoque)
             
         except DadosInvalidosException as e:
             self.__tela_estoque.mostra_mensagem(f"ATENÇÃO: {str(e)}")
@@ -215,3 +222,18 @@ class ControladorEstoque:
             self.__tela_estoque.mostra_mensagem(f"ERRO: {str(e)}")
         except Exception as e:
             self.__tela_estoque.mostra_mensagem(f"ERRO inesperado ao abrir tela: {str(e)}")
+
+    def mostra_estoque_gui(self, estoque):
+        """Método público para mostrar estoque via GUI, usado por outros controladores"""
+        try:
+            if estoque is None:
+                raise DadosInvalidosException("Estoque não pode ser nulo.")
+
+            # Criar cópia dos dados do estoque sem passar o objeto original
+            dados_estoque = dict(estoque.estoque) if estoque.estoque else {}
+            self.__tela_estoque.mostra_estoque_gui(dados_estoque)
+            
+        except DadosInvalidosException as e:
+            self.__tela_estoque.mostra_mensagem(f"ATENÇÃO: {str(e)}")
+        except Exception as e:
+            self.__tela_estoque.mostra_mensagem(f"ERRO inesperado ao mostrar estoque via GUI: {str(e)}")
