@@ -22,7 +22,7 @@ class TelaEstoque:
             print(f"- Produto: {produto} | Quantidade: {quantidade}")
         print("\n")
 
-    def seleciona_produto(self, estoque: dict) -> str:
+    def seleciona_produto(self) -> str:
         produto = input("Digite o nome do produto que deseja alterar: ").strip()
         return produto
 

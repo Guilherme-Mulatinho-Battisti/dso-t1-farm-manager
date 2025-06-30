@@ -26,14 +26,14 @@ class ControladorEstoque():
         self.__controlador_sistema.controlador_insumo.lista_insumo()
         
         while True:
-            produto = input("Digite o nome do produto (ou ENTER para sair): ").strip()
+            produto = self.__tela_estoque.seleciona_produto()
             if not produto:
                 break
             if produto not in nomes_insumos:
                 print("Produto inválido. Escolha um dos insumos cadastrados.")
                 continue
             try:
-                quantidade = int(input("Digite a quantidade: ").strip())
+                quantidade = self.__tela_estoque.pega_nova_quantidade()
                 estoque.estoque[produto] = quantidade
                 self.registrar_log(estoque, "ADICIONADO", produto, quantidade)
             except ValueError:
