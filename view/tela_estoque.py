@@ -214,3 +214,37 @@ class TelaEstoque:
                     sg.popup_error("Selecione um item da lista!")
         window.close()
         return item_selecionado
+
+    def pega_dados_produto_gui(self, nomes_insumos):
+        """Coleta dados de produto e quantidade via GUI"""
+        layout = [
+            [sg.Text("Selecione um produto:")],
+            [sg.Combo(nomes_insumos, key="-PRODUTO-", size=(30, 1), readonly=True)],
+            [sg.Text("Digite a quantidade:")],
+            [sg.InputText(key="-QUANTIDADE-", size=(20, 1))],
+            [sg.Button("Confirmar", key="-CONFIRMAR-"), sg.Button("Cancelar", key="-CANCELAR-")]
+        ]
+        
+        window = get_janela("Adicionar Produto ao Estoque", layout)
+        dados = None
+        
+        while True:
+            event, values = window.read()
+            if event in (sg.WIN_CLOSED, "-CANCELAR-"):
+                break
+            if event == "-CONFIRMAR-":
+                produto = values["-PRODUTO-"]
+                quantidade = values["-QUANTIDADE-"].strip()
+                
+                if not produto:
+                    sg.popup_error("Selecione um produto!")
+                    continue
+                if not quantidade:
+                    sg.popup_error("Digite uma quantidade!")
+                    continue
+                    
+                dados = {"produto": produto, "quantidade": quantidade}
+                break
+                
+        window.close()
+        return dados

@@ -2,6 +2,13 @@ from view.tela_porto import TelaPorto
 from model.porto import Porto
 from model.estoque import Estoque
 from model.endereco import Endereco
+from exceptions.custom_exception import (
+    OpcaoNaoExistenteException,
+    ListaVaziaException,
+    ItemNaoEncontradoException,
+    DadosInvalidosException,
+    OperacaoCanceladaException
+)
 
 
 class ControladorPorto():
@@ -12,50 +19,110 @@ class ControladorPorto():
         self.carrega_dados()
 
     def retornar_porto(self):
-        return self.__porto
+        try:
+            if self.__porto is None:
+                raise DadosInvalidosException("Porto não está inicializado.")
+            return self.__porto
+        except DadosInvalidosException as e:
+            self.__tela_porto.mostra_mensagem_gui(f"ATENÇÃO: {str(e)}")
+            return None
+        except Exception as e:
+            self.__tela_porto.mostra_mensagem_gui(f"ERRO inesperado ao retornar porto: {str(e)}")
+            return None
 
     def carrega_dados(self, quantidade_padrao=100):
-        insumos = self.__controlador_sistema.controlador_insumo.retorna_insumos()
-        for insumo in insumos:
-            self.__porto.estoque.estoque[insumo.nome] = quantidade_padrao
-            self.__controlador_sistema.controlador_estoque.registrar_log(
-                self.__porto.estoque, "ADICIONADO", insumo.nome, quantidade_padrao
-            )
+        try:
+            if quantidade_padrao < 0:
+                raise DadosInvalidosException("Quantidade padrão não pode ser negativa.")
+                
+            insumos = self.__controlador_sistema.controlador_insumo.retorna_insumos()
+            if not insumos:
+                raise ListaVaziaException("Não há insumos cadastrados para carregar no porto.")
+                
+            for insumo in insumos:
+                self.__porto.estoque.estoque[insumo.nome] = quantidade_padrao
+                self.__controlador_sistema.controlador_estoque.registrar_log(
+                    self.__porto.estoque, "ADICIONADO", insumo.nome, quantidade_padrao
+                )
+                
+        except (DadosInvalidosException, ListaVaziaException) as e:
+            self.__tela_porto.mostra_mensagem_gui(f"ATENÇÃO: {str(e)}")
+        except Exception as e:
+            self.__tela_porto.mostra_mensagem_gui(f"ERRO inesperado ao carregar dados: {str(e)}")
 
     def alterar_porto(self):
-        porto = self.__porto
-        if porto is None:
-            return
+        try:
+            porto = self.__porto
+            if porto is None:
+                raise DadosInvalidosException("Porto não pode ser nulo.")
 
-        novos_dados_porto = self.__tela_porto.pega_dados_porto_gui()
-        if not novos_dados_porto:
-            self.__tela_porto.mostra_mensagem_gui("Alteração cancelada.")
-            return
+            novos_dados_porto = self.__tela_porto.pega_dados_porto_gui()
+            if not novos_dados_porto:
+                raise OperacaoCanceladaException("Alteração cancelada pelo usuário.")
 
-        porto.nome = novos_dados_porto["nome"]
-        porto.endereco = (novos_dados_porto["pais"], novos_dados_porto["estado"], novos_dados_porto["cidade"])
+            # Validar dados obrigatórios
+            if not novos_dados_porto.get("nome", "").strip():
+                raise DadosInvalidosException("Nome do porto é obrigatório.")
+            if not novos_dados_porto.get("pais", "").strip():
+                raise DadosInvalidosException("País é obrigatório.")
+            if not novos_dados_porto.get("estado", "").strip():
+                raise DadosInvalidosException("Estado é obrigatório.")
+            if not novos_dados_porto.get("cidade", "").strip():
+                raise DadosInvalidosException("Cidade é obrigatória.")
 
-        self.__tela_porto.mostra_mensagem_gui("Porto alterado com sucesso!")
-        self.mostrar_porto()
+            porto.nome = novos_dados_porto["nome"]
+            # Alterar endereço usando o método específico
+            porto.alterar_endereco(
+                novos_dados_porto["pais"], 
+                novos_dados_porto["estado"], 
+                novos_dados_porto["cidade"]
+            )
+
+            self.__tela_porto.mostra_mensagem_gui("Porto alterado com sucesso!")
+            self.mostrar_porto()
+            
+        except (DadosInvalidosException, OperacaoCanceladaException) as e:
+            self.__tela_porto.mostra_mensagem_gui(f"ATENÇÃO: {str(e)}")
+        except Exception as e:
+            self.__tela_porto.mostra_mensagem_gui(f"ERRO inesperado ao alterar porto: {str(e)}")
 
     def mostrar_porto(self):
-        porto = self.__porto
-        dados = [{
-            "nome": porto.nome,
-            "id": getattr(porto, "id", 0),
-            "endereco": f"{porto.endereco[0]}, {porto.endereco[1]}, {porto.endereco[2]}",
-            "estoque": porto.estoque.estoque
-        }]
-        self.__tela_porto.mostra_portos_gui(dados)
-        return self.__porto
+        try:
+            porto = self.__porto
+            if porto is None:
+                raise DadosInvalidosException("Porto não pode ser nulo.")
+                
+            dados = [{
+                "nome": porto.nome,
+                "id": getattr(porto, "id", 0),
+                "endereco": porto.endereco,
+                "estoque": porto.estoque.estoque
+            }]
+            self.__tela_porto.mostra_portos_gui(dados)
+            return self.__porto
+            
+        except DadosInvalidosException as e:
+            self.__tela_porto.mostra_mensagem_gui(f"ATENÇÃO: {str(e)}")
+            return None
+        except Exception as e:
+            self.__tela_porto.mostra_mensagem_gui(f"ERRO inesperado ao mostrar porto: {str(e)}")
+            return None
 
     def gerenciar_estoque_porto(self):
-        porto = self.__porto
+        try:
+            porto = self.__porto
+            if porto is None:
+                raise DadosInvalidosException("Porto não pode ser nulo.")
+                
+            if porto.estoque is None:
+                raise DadosInvalidosException("Estoque do porto não pode ser nulo.")
 
-        if porto is None:
-            return
-
-        self.__controlador_sistema.controlador_estoque.abre_tela(porto.estoque)
+            self.__controlador_sistema.controlador_estoque.abre_tela(porto.estoque)
+            
+        except DadosInvalidosException as e:
+            self.__tela_porto.mostra_mensagem_gui(f"ATENÇÃO: {str(e)}")
+        except Exception as e:
+            self.__tela_porto.mostra_mensagem_gui(f"ERRO inesperado ao gerenciar estoque: {str(e)}")
 
     def retornar(self):
         self.__controlador_sistema.abre_tela()
@@ -66,4 +133,15 @@ class ControladorPorto():
 
         continua = True
         while continua:
-            lista_opcoes[self.__tela_porto.tela_opcoes_gui()]()
+            try:
+                opcao = self.__tela_porto.tela_opcoes_gui()
+                if opcao in lista_opcoes:
+                    lista_opcoes[opcao]()
+                else:
+                    raise OpcaoNaoExistenteException(f"Opção {opcao} não existe.")
+                    
+            except OpcaoNaoExistenteException as e:
+                self.__tela_porto.mostra_mensagem_gui(f"ATENÇÃO: {str(e)}")
+            except Exception as e:
+                self.__tela_porto.mostra_mensagem_gui(f"ERRO inesperado no menu: {str(e)}")
+                continua = False  # Sair do loop em caso de erro grave

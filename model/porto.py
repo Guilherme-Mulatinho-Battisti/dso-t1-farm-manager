@@ -31,3 +31,7 @@ class Porto:
     @estoque.setter
     def estoque(self, estoque: Estoque) -> None:
         self.__estoque = estoque
+
+    def alterar_endereco(self, pais: str, estado: str, cidade: str) -> None:
+        """Método para alterar o endereço do porto"""
+        self.__endereco = Endereco(pais, estado, cidade)
