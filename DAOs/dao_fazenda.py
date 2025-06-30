@@ -10,9 +10,9 @@ class FazendaDAO(DAO):
         if (fazenda is not None) and isinstance(fazenda, Fazenda) and isinstance(fazenda.id, int):
             super().add(fazenda.id, fazenda)
 
-    def update(self, cultura: Fazenda):
-        if (cultura is not None) and isinstance(cultura, Fazenda) and isinstance(cultura.id, int):
-            super().update(cultura.id, cultura)
+    def update(self, fazenda: Fazenda):
+        if (fazenda is not None) and isinstance(fazenda, Fazenda) and isinstance(fazenda.id, int):
+            super().update(fazenda.id, fazenda)
 
     def get(self, key: int):
         if isinstance(key, int):

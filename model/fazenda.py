@@ -29,6 +29,18 @@ class Fazenda:
         self.__endereco = Endereco(pais, estado, cidade)
 
     @property
+    def pais(self) -> str:
+        return self.__endereco.pais
+
+    @property
+    def estado(self) -> str:
+        return self.__endereco.estado
+
+    @property
+    def cidade(self) -> str:
+        return self.__endereco.cidade
+
+    @property
     def nome(self) -> str:
         return self.__nome
 
@@ -53,7 +65,7 @@ class Fazenda:
         self.__cultura = cultura
 
     @property
-    def area_plantada(self) -> str:
+    def area_plantada(self) -> int:
         return self.__area_plantada
 
     @area_plantada.setter

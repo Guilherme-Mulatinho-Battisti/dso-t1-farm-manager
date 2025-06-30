@@ -6,23 +6,7 @@ import FreeSimpleGUI as sg
 
 class TelaFazenda(TelaBase):
     def tela_opcoes(self) -> int:
-        while True:
-            print("-------- FAZENDAS ----------")
-            print("1 - Incluir Fazenda")
-            print("2 - Gerenciar Fazenda")
-            print("3 - Alterar Fazenda")
-            print("4 - Listar Fazendas")
-            print("5 - Excluir Fazenda")
-            print("0 - Retornar")
-
-            try:
-                opcao = int(input("Escolha a opção: "))
-                if opcao in [0, 1, 2, 3, 4, 5]:
-                    return opcao
-                else:
-                    print("Opção fora do intervalo. Tente novamente.")
-            except ValueError:
-                print("Entrada inválida. Digite um número inteiro.")
+        return self.tela_opcoes_gui()
 
     def tela_opcoes_gui(self) -> int:
         window, opcao = None, None
@@ -62,114 +46,132 @@ class TelaFazenda(TelaBase):
         return opcao
 
     def tela_gerenciador_fazenda(self) -> int:
-        while True:
-            print("-------- GERENCIADOR DE FAZENDA ----------")
-            print("1 - Gerenciar Estoque")
-            print("2 - Alterar Cultura")
-            print("3 - Plantar")
-            print("4 - Colher")
-            print("5 - Aplicar Defensivo")
-            print("6 - Aplicar Fertilizante")
-            print("0 - Retornar")
-
-            try:
-                opcao = int(input("Escolha a opção: "))
-                if opcao in [0, 1, 2, 3, 4, 5, 6]:
-                    return opcao
-                else:
-                    print("Opção fora do intervalo. Tente novamente.")
-            except ValueError:
-                print("Entrada inválida. Digite um número inteiro.")
-
-    def pega_dados_fazenda(self) -> dict:
-        print("-------- DADOS FAZENDA ----------")
-
-        nome = input("Nome: ")
-        while not isinstance(nome, str) or nome.strip() == "":
-            nome = input("Nome inválido. Digite novamente: ")
-
-        while True:
-            try:
-                id = int(input("ID (número inteiro): "))
-                break
-            except ValueError:
-                print("ID inválido. Digite um número inteiro.")
-
-        while True:
-            try:
-                area = int(input("Área Plantada (em ha - número inteiro): "))
-                break
-            except ValueError:
-                print("Área inválida. Digite um número inteiro.")
-
-        print("--- ENDEREÇO ---")
-
-        pais = input("País: ")
-        while not isinstance(pais, str) or pais.strip() == "":
-            pais = input("País inválido. Digite novamente: ")
-
-        estado = input("Estado: ")
-        while not isinstance(estado, str) or estado.strip() == "":
-            estado = input("Estado inválido. Digite novamente: ")
-
-        cidade = input("Cidade: ")
-        while not isinstance(cidade, str) or cidade.strip() == "":
-            cidade = input("Cidade inválida. Digite novamente: ")
-
-        return {
-            "nome": nome.strip(),
-            "id": id,
-            "pais": pais.strip(),
-            "estado": estado.strip(),
-            "cidade": cidade.strip(),
-            "area_plantada": area,
-        }
-
-    def mostra_fazenda(self, dados_fazenda: dict) -> None:
-        print("Nome da Fazenda: ", dados_fazenda["nome"])
-        print("ID da Fazenda: ", dados_fazenda["id"])
-        print("Endereço: ", dados_fazenda["endereco"])
-        print("Area Plantada: ", dados_fazenda["area_plantada"])
-        print("Cultura: ", dados_fazenda["cultura"])
-        print("Estoque: ", dados_fazenda["estoque"])
-        print("\n")
-
-    def pega_dados_fazenda_gui(self) -> dict:
+        """Menu GUI para gerenciamento de fazenda"""
         layout = [
-            [sg.Text("DADOS DA FAZENDA", font=("Arial", 14, "bold"))],
-            [sg.Text("Nome:"), sg.Input(key="-NOME-")],
-            [sg.Text("ID:"), sg.Input(key="-ID-")],
-            [sg.Text("Área Plantada (ha):"), sg.Input(key="-AREA-")],
-            [sg.Text("País:"), sg.Input(key="-PAIS-")],
-            [sg.Text("Estado:"), sg.Input(key="-ESTADO-")],
-            [sg.Text("Cidade:"), sg.Input(key="-CIDADE-")],
-            [sg.Button("Confirmar", key="-CONFIRMAR-"), sg.Button("Cancelar", key="-CANCELAR-")]
+            [sg.Text("GERENCIADOR DE FAZENDA", font=("Arial", 14, "bold"), justification="center")],
+            [sg.Text("")],
+            [sg.Button("Gerenciar Estoque", size=(20, 1), key="-ESTOQUE-")],
+            [sg.Button("Alterar Cultura", size=(20, 1), key="-CULTURA-")],
+            [sg.Button("Plantar", size=(20, 1), key="-PLANTAR-")],
+            [sg.Button("Colher", size=(20, 1), key="-COLHER-")],
+            [sg.Button("Aplicar Defensivo", size=(20, 1), key="-DEFENSIVO-")],
+            [sg.Button("Aplicar Fertilizante", size=(20, 1), key="-FERTILIZANTE-")],
+            [sg.Text("")],
+            [sg.Button("Retornar", size=(20, 1), key="-RETORNAR-")]
         ]
-        window = get_janela("Dados da Fazenda", layout)
-        dados = None
+        
+        window = sg.Window("Gerenciador de Fazenda", layout, modal=True, finalize=True)
+        
         while True:
             event, values = window.read()
-            if event in (sg.WIN_CLOSED, "-CANCELAR-"):
+            
+            if event in (sg.WIN_CLOSED, "-RETORNAR-"):
+                opcao = 0
                 break
-            if event == "-CONFIRMAR-":
-                if not values["-NOME-"] or not values["-ID-"]:
-                    sg.popup_error("Nome e ID são obrigatórios!")
-                    continue
-                try:
-                    dados = {
-                        "nome": values["-NOME-"],
-                        "id": int(values["-ID-"]),
-                        "area_plantada": int(values["-AREA-"]),
-                        "pais": values["-PAIS-"],
-                        "estado": values["-ESTADO-"],
-                        "cidade": values["-CIDADE-"]
-                    }
-                except Exception:
-                    sg.popup_error("Preencha todos os campos corretamente!")
-                    continue
+            elif event == "-ESTOQUE-":
+                opcao = 1
                 break
+            elif event == "-CULTURA-":
+                opcao = 2
+                break
+            elif event == "-PLANTAR-":
+                opcao = 3
+                break
+            elif event == "-COLHER-":
+                opcao = 4
+                break
+            elif event == "-DEFENSIVO-":
+                opcao = 5
+                break
+            elif event == "-FERTILIZANTE-":
+                opcao = 6
+                break
+        
         window.close()
-        return dados
+        return opcao
+
+    def pega_dados_fazenda(self) -> dict | None:
+        """Formulário GUI para entrada de dados da fazenda"""
+        layout = [
+            [sg.Text("DADOS DA FAZENDA", font=("Arial", 14, "bold"), justification="center")],
+            [sg.Text("")],
+            
+            [sg.Text("Nome da Fazenda:", size=(20, 1)), sg.InputText(key="-NOME-", size=(30, 1))],
+            [sg.Text("ID:", size=(20, 1)), sg.InputText(key="-ID-", size=(10, 1))],
+            [sg.Text("Área Plantada (ha):", size=(20, 1)), sg.InputText(key="-AREA-", size=(10, 1))],
+            
+            [sg.Text("")],
+            [sg.Text("ENDEREÇO", font=("Arial", 12, "bold"))],
+            [sg.Text("País:", size=(20, 1)), sg.InputText(key="-PAIS-", size=(30, 1))],
+            [sg.Text("Estado:", size=(20, 1)), sg.InputText(key="-ESTADO-", size=(30, 1))],
+            [sg.Text("Cidade:", size=(20, 1)), sg.InputText(key="-CIDADE-", size=(30, 1))],
+            
+            [sg.Text("")],
+            [sg.Button("Confirmar", size=(10, 1)), sg.Button("Cancelar", size=(10, 1))]
+        ]
+        
+        window = sg.Window("Cadastro de Fazenda", layout, modal=True, finalize=True)
+        
+        while True:
+            event, values = window.read()
+            
+            if event in (sg.WIN_CLOSED, "Cancelar"):
+                window.close()
+                return None
+                
+            if event == "Confirmar":
+                # Validações
+                nome = values["-NOME-"].strip()
+                if not nome:
+                    sg.popup_error("Nome da fazenda é obrigatório!")
+                    continue
+                
+                try:
+                    id_fazenda = int(values["-ID-"])
+                except ValueError:
+                    sg.popup_error("ID deve ser um número inteiro!")
+                    continue
+                
+                try:
+                    area = int(values["-AREA-"])
+                    if area <= 0:
+                        sg.popup_error("Área deve ser um número positivo!")
+                        continue
+                except ValueError:
+                    sg.popup_error("Área deve ser um número inteiro!")
+                    continue
+                
+                pais = values["-PAIS-"].strip()
+                if not pais:
+                    sg.popup_error("País é obrigatório!")
+                    continue
+                
+                estado = values["-ESTADO-"].strip()
+                if not estado:
+                    sg.popup_error("Estado é obrigatório!")
+                    continue
+                
+                cidade = values["-CIDADE-"].strip()
+                if not cidade:
+                    sg.popup_error("Cidade é obrigatória!")
+                    continue
+                
+                window.close()
+                return {
+                    "nome": nome,
+                    "id": id_fazenda,
+                    "pais": pais,
+                    "estado": estado,
+                    "cidade": cidade,
+                    "area_plantada": area,
+                }
+        
+        window.close()
+        return None
+
+    def mostra_fazenda(self, dados_fazenda: dict) -> None:
+        """Método obsoleto - use mostra_fazenda_gui"""
+        self.mostra_mensagem_gui(f"Fazenda: {dados_fazenda['nome']}")
 
     def seleciona_fazenda_gui(self, fazendas: list) -> Any | None:
         if not fazendas:
@@ -184,7 +186,7 @@ class TelaFazenda(TelaBase):
                 sg.Button("Selecionar", key=f"-SEL-{fazenda['id']}-")
             ])
         layout.append([sg.Button("Cancelar", key="-CANCELAR-")])
-        window = get_janela("Selecionar Fazenda", layout)
+        window = sg.Window("Selecionar Fazenda", layout, modal=True, finalize=True)
         id_fazenda = None
         while True:
             event, values = window.read()
@@ -206,24 +208,39 @@ class TelaFazenda(TelaBase):
         if not dados_fazendas:
             sg.popup("Nenhuma fazenda encontrada. Retornando...")
             return
-        linhas = []
-        for dado in dados_fazendas:
-            linhas.append(
-                f"Nome: {dado['nome']}\nID: {dado['id']}\nEndereço: {dado['pais']}, {dado['estado']}, {dado['cidade']}\n"
-                f"Área Plantada: {dado['area_plantada']} ha\nCultura: {dado.get('cultura', '')}\nEstoque: {dado.get('estoque', '')}"
-            )
-        layout = get_layout_listagem("Fazendas", linhas, "Retornar")
-        window = get_janela("Fazendas", layout)
+        
+        layout = [
+            [sg.Text("FAZENDAS CADASTRADAS", font=("Arial", 16, "bold"), justification="center", expand_x=True, text_color="#2E7D32")],
+            [sg.HorizontalSeparator()]
+        ]
+        
+        # Lista organizada sem tabela
+        for i, dado in enumerate(dados_fazendas):
+            fazenda_info = [
+                [sg.Frame("", [
+                    [sg.Text(f"🏡 {dado['nome']}", font=("Arial", 12, "bold"), text_color="#2E7D32"),
+                     sg.Push(), 
+                     sg.Text(f"ID: {dado['id']}", font=("Arial", 10), text_color="#666666")],
+                    [sg.Text(f"📍 {dado['pais']}, {dado['estado']}, {dado['cidade']}", font=("Arial", 10))],
+                    [sg.Text(f"🌱 Cultura: {dado.get('cultura', 'N/A')}", font=("Arial", 10))],
+                    [sg.Text(f"📏 Área: {dado['area_plantada']} ha", font=("Arial", 10))],
+                    [sg.Text(f"📦 Estoque: {dado.get('estoque', 'N/A')}", font=("Arial", 10))]
+                ], border_width=1, relief=sg.RELIEF_FLAT, expand_x=True)]
+            ]
+            
+            layout.extend(fazenda_info)
+            
+            # Adiciona um pequeno espaço entre fazendas
+            if i < len(dados_fazendas) - 1:
+                layout.append([sg.Text("")])
+        
+        layout.extend([
+            [sg.HorizontalSeparator()],
+            [sg.Push(), sg.Button("Fechar", size=(12, 1), button_color=("white", "#4CAF50")), sg.Push()]
+        ])
+        
+        window = sg.Window("Lista de Fazendas", layout, modal=True, finalize=True, resizable=True)
         window.read()
         window.close()
 
-    def seleciona_fazenda(self) -> int:
-        while True:
-            try:
-                id = int(input("ID do fazenda que deseja selecionar: "))
-                return id
-            except ValueError:
-                print("Entrada inválida. Digite um número inteiro.")
 
-    def mostra_mensagem(self, msg) -> None:
-        print(msg)

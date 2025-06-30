@@ -127,7 +127,11 @@ class TelaCultura(TelaBase):
     def seleciona_cultura(self) -> int:
         return int(input("Digite o ID da cultura que deseja selecionar: "))
 
-    def seleciona_cultura_gui(self, culturas: list) -> int:
+    def seleciona_cultura_gui(self, culturas: list) -> int | None:
+        if not culturas:
+            sg.popup("Nenhuma cultura cadastrada. Retornando...")
+            return None
+            
         layout = [[sg.Text("Selecione a cultura desejada:", font=("Arial", 14, "bold"))]]
         for cultura in culturas:
             texto = f"ID: {cultura['id']} | Nome: {cultura['nome']}"

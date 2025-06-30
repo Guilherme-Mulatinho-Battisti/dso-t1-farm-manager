@@ -13,3 +13,15 @@ class Endereco():
     def mostrar_endereco(self) -> str:
         """ Método que retorna o endereço formatado. """
         return f"{self.__pais}, {self.__estado}, {self.__cidade}"
+
+    @property
+    def pais(self) -> str:
+        return self.__pais
+
+    @property
+    def estado(self) -> str:
+        return self.__estado
+
+    @property
+    def cidade(self) -> str:
+        return self.__cidade

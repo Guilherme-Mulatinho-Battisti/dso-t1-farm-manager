@@ -29,7 +29,7 @@ class ControladorEstoque:
 
         self.__controlador_sistema.controlador_insumo.lista_insumo()
 
-        dados = self.__tela_estoque.pega_dados_produto_gui(nomes_insumos)
+        dados = self.__tela_estoque.pega(nomes_insumos)
         if not dados or not dados.get("produto"):
             return
         produto = dados["produto"]

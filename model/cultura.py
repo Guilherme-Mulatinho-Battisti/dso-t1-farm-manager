@@ -9,7 +9,7 @@ class Cultura:
     - num_aplicacao: Numero de aplicacoes de defensivo e fertilizante durante o ciclo da cultura.
     """
     def __init__(self, nome: str, id: int, dose_semente: float, dose_fertilizante: float,
-                 dose_defensivo: dict, temp_crescimento: int, num_aplicacao: int) -> None:
+                 dose_defensivo: float, temp_crescimento: int, num_aplicacao: int) -> None:
         self.__nome = nome
         self.__id = id
         self.__dose_semente = dose_semente
@@ -55,7 +55,7 @@ class Cultura:
         return self.__dose_defensivo
 
     @dose_defensivo.setter
-    def dose_defensivo(self, dose_defensivo: dict) -> None:
+    def dose_defensivo(self, dose_defensivo: float) -> None:
         self.__dose_defensivo = dose_defensivo
 
     @property
