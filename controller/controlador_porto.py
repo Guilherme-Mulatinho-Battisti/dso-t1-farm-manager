@@ -23,47 +23,39 @@ class ControladorPorto():
             )
 
     def alterar_porto(self):
-        porto = self.mostrar_porto()
+        porto = self.__porto
         if porto is None:
             return
 
-        if porto is not None:
-            novos_dados_porto = self.__tela_porto.pega_dados_porto()
+        novos_dados_porto = self.__tela_porto.pega_dados_porto_gui()
+        if not novos_dados_porto:
+            self.__tela_porto.mostra_mensagem_gui("Alteração cancelada.")
+            return
 
-            porto.nome = novos_dados_porto["nome"]
-            porto.endereco = (novos_dados_porto["pais"], novos_dados_porto["estado"], novos_dados_porto["cidade"])
+        porto.nome = novos_dados_porto["nome"]
+        porto.endereco = (novos_dados_porto["pais"], novos_dados_porto["estado"], novos_dados_porto["cidade"])
 
-            self.__tela_porto.mostra_mensagem("Porto alterada com sucesso!")
-            self.mostrar_porto()
-        else:
-            self.__tela_porto.mostra_mensagem("ATENCAO: porto não existente")
+        self.__tela_porto.mostra_mensagem_gui("Porto alterado com sucesso!")
+        self.mostrar_porto()
 
     def mostrar_porto(self):
         porto = self.__porto
-        self.__tela_porto.mostra_portos_gui({"nome": porto.nome,
-                                        'endereco': porto.endereco,
-                                        "estoque": porto.estoque.estoque})
+        dados = [{
+            "nome": porto.nome,
+            "id": getattr(porto, "id", 0),
+            "endereco": f"{porto.endereco[0]}, {porto.endereco[1]}, {porto.endereco[2]}",
+            "estoque": porto.estoque.estoque
+        }]
+        self.__tela_porto.mostra_portos_gui(dados)
         return self.__porto
 
     def gerenciar_estoque_porto(self):
-        porto = self.mostrar_porto()
+        porto = self.__porto
+
         if porto is None:
             return
 
-        if porto is not None:
-            continua = True
-            while continua:
-                opcao = self.__tela_porto.tela_gerenciador_estoque_porto()
-                # Gerenciar estoque
-                if opcao == 1:
-                    self.__controlador_sistema.controlador_estoque.abre_tela(porto.estoque)
-                # retornar
-                elif opcao == 0:
-                    continua = False
-                else:
-                    self.__tela_porto.mostra_mensagem("Opção inválida.")
-        else:
-            self.__tela_porto.mostra_mensagem("ATENCAO: porto não existente")
+        self.__controlador_sistema.controlador_estoque.abre_tela(porto.estoque)
 
     def retornar(self):
         self.__controlador_sistema.abre_tela()

@@ -1,6 +1,7 @@
 from view.tela_cultura import TelaCultura
 from model.cultura import Cultura
 from DAOs.dao_cultura import CulturaDAO
+from exceptions.custom_exception import OpcaoNaoExistenteException, ListaVaziaException, ItemJaExisteException
 
 
 class ControladorCultura():
@@ -46,143 +47,128 @@ class ControladorCultura():
         return None
 
     def incluir_cultura(self):
-        dados_cultura = self.__tela_cultura.pega_dados_cultura()
-        for cultura in self.__culturas_DAO.get_all():
-            if cultura.id == dados_cultura["id"]:
-                self.__tela_cultura.mostra_mensagem("ATENÇÃO: Cultura com esse ID já existe.")
+        try:
+            dados_cultura = self.__tela_cultura.pega_dados_cultura_gui()
+            if not dados_cultura:
                 return
-
-        nova_cultura = Cultura(
-            dados_cultura["nome"], dados_cultura["id"], dados_cultura["dose_semente"],
-            dados_cultura["dose_fertilizante"], dados_cultura["dose_defensivo"],
-            dados_cultura["temp_crescimento"], dados_cultura["num_aplicacao"]
-        )
-        self.__culturas_DAO.add(nova_cultura)
-
-    def incluir_cultura_gui(self):
-        dados_cultura = self.__tela_cultura.pega_dados_cultura_gui()
-        if not dados_cultura:
-            return
-        for cultura in self.__culturas_DAO.get_all():
-            if cultura.id == dados_cultura["id"]:
-                self.__tela_cultura.mostra_mensagem_gui("ATENÇÃO: Cultura com esse ID já existe.")
-                return
-        nova_cultura = Cultura(
-            dados_cultura["nome"], dados_cultura["id"], dados_cultura["dose_semente"],
-            dados_cultura["dose_fertilizante"], dados_cultura["dose_defensivo"],
-            dados_cultura["temp_crescimento"], dados_cultura["num_aplicacao"]
-        )
-        self.__culturas_DAO.add(nova_cultura)
-        self.__tela_cultura.mostra_mensagem_gui("Cultura adicionada com sucesso!")
-
-    def alterar_cultura(self):
-        self.listar_culturas()
-        cultura = self.pega_cultura_por_id()
-
-        if (cultura is not None):
-            novos_dados_cultura = self.__tela_cultura.pega_dados_cultura()
-            cultura.nome = novos_dados_cultura["nome"]
-            cultura.id = novos_dados_cultura["id"]
-            cultura.dose_semente = novos_dados_cultura["dose_semente"]
-            cultura.dose_fertilizante = novos_dados_cultura["dose_fertilizante"]
-            cultura.dose_defensivo = novos_dados_cultura["dose_defensivo"]
-            cultura.temp_crescimento = novos_dados_cultura["temp_crescimento"]
-            cultura.num_aplicacao = novos_dados_cultura["num_aplicacao"]
-            self.listar_culturas()
-        else:
-            self.__tela_cultura.mostra_mensagem("ATENCAO: cultura não existente")
+            
+            for cultura in self.__culturas_DAO.get_all():
+                if cultura.id == dados_cultura["id"]:
+                    raise ItemJaExisteException("ATENÇÃO: Cultura com esse ID já existe.")
+            
+            nova_cultura = Cultura(
+                dados_cultura["nome"], dados_cultura["id"], dados_cultura["dose_semente"],
+                dados_cultura["dose_fertilizante"], dados_cultura["dose_defensivo"],
+                dados_cultura["temp_crescimento"], dados_cultura["num_aplicacao"]
+            )
+            self.__culturas_DAO.add(nova_cultura)
+            self.__tela_cultura.mostra_mensagem_gui("Cultura adicionada com sucesso!")
+        except ItemJaExisteException as e:
+            self.__tela_cultura.mostra_mensagem_gui(str(e))
+        except Exception as e:
+            self.__tela_cultura.mostra_mensagem_gui(f"Erro ao incluir cultura: {str(e)}")
 
     def listar_culturas(self):
-        culturas = self.__culturas_DAO.get_all()
-        if len(culturas) == 0:
-            self.__tela_cultura.mostra_mensagem("ATENCAO: lista de culturas vazia")
-            return
+        try:
+            culturas_obj = self.__culturas_DAO.get_all()
+            if not culturas_obj:
+                raise ListaVaziaException("ATENCAO: lista de culturas vazia")
+            
+            culturas = [
+                {"nome": c.nome, "id": c.id, "dose_semente": c.dose_semente, "dose_fertilizante": c.dose_fertilizante,
+                 "dose_defensivo": c.dose_defensivo, "temp_crescimento": c.temp_crescimento, "num_aplicacao": c.num_aplicacao}
+                for c in culturas_obj
+            ]
+            self.__tela_cultura.mostra_culturas_gui(culturas)
+        except ListaVaziaException as e:
+            self.__tela_cultura.mostra_mensagem_gui(str(e))
+        except Exception as e:
+            self.__tela_cultura.mostra_mensagem_gui(f"Erro ao listar culturas: {str(e)}")
 
-        dados_saida = []
-        for cultura in culturas:
-            dados_saida.append({"nome": cultura.nome, "id": cultura.id,
-                                                "dose_semente": cultura.dose_semente,
-                                                "dose_fertilizante": cultura.dose_fertilizante,
-                                                "dose_defensivo": cultura.dose_defensivo,
-                                                "temp_crescimento": cultura.temp_crescimento,
-                                                "num_aplicacao": cultura.num_aplicacao})
-
-        self.__tela_cultura.mostra_culturas_gui(dados_saida)
-
-    def listar_culturas_gui(self):
-        culturas = [
-            {"nome": c.nome, "id": c.id, "dose_semente": c.dose_semente, "dose_fertilizante": c.dose_fertilizante,
-             "dose_defensivo": c.dose_defensivo, "temp_crescimento": c.temp_crescimento, "num_aplicacao": c.num_aplicacao}
-            for c in self.__culturas_DAO.get_all()
-        ]
-        self.__tela_cultura.mostra_culturas_gui(culturas)
-
-    def alterar_cultura_gui(self):
-        culturas = [
-            {"nome": c.nome, "id": c.id, "dose_semente": c.dose_semente, "dose_fertilizante": c.dose_fertilizante,
-             "dose_defensivo": c.dose_defensivo, "temp_crescimento": c.temp_crescimento, "num_aplicacao": c.num_aplicacao}
-            for c in self.__culturas_DAO.get_all()
-        ]
-        id_cultura = self.__tela_cultura.seleciona_cultura_gui(culturas)
-        if id_cultura is None:
-            return
-        cultura = next((c for c in self.__culturas_DAO.get_all() if c.id == id_cultura), None)
-        if cultura is not None:
-            novos_dados_cultura = self.__tela_cultura.pega_dados_cultura_gui()
-            if not novos_dados_cultura:
+    def alterar_cultura(self):
+        try:
+            culturas_obj = self.__culturas_DAO.get_all()
+            if not culturas_obj:
+                raise ListaVaziaException("ATENCAO: lista de culturas vazia")
+            
+            culturas = [
+                {"nome": c.nome, "id": c.id, "dose_semente": c.dose_semente, "dose_fertilizante": c.dose_fertilizante,
+                 "dose_defensivo": c.dose_defensivo, "temp_crescimento": c.temp_crescimento, "num_aplicacao": c.num_aplicacao}
+                for c in culturas_obj
+            ]
+            id_cultura = self.__tela_cultura.seleciona_cultura_gui(culturas)
+            if id_cultura is None:
                 return
-            cultura.nome = novos_dados_cultura["nome"]
-            cultura.id = novos_dados_cultura["id"]
-            cultura.dose_semente = novos_dados_cultura["dose_semente"]
-            cultura.dose_fertilizante = novos_dados_cultura["dose_fertilizante"]
-            cultura.dose_defensivo = novos_dados_cultura["dose_defensivo"]
-            cultura.temp_crescimento = novos_dados_cultura["temp_crescimento"]
-            cultura.num_aplicacao = novos_dados_cultura["num_aplicacao"]
-            self.__tela_cultura.mostra_mensagem_gui("Cultura alterada com sucesso!")
-            self.listar_culturas_gui()
-        else:
-            self.__tela_cultura.mostra_mensagem_gui("ATENCAO: cultura não existente")
+            cultura = next((c for c in self.__culturas_DAO.get_all() if c.id == id_cultura), None)
+            if cultura is not None:
+                novos_dados_cultura = self.__tela_cultura.pega_dados_cultura_gui()
+                if not novos_dados_cultura:
+                    return
+                cultura.nome = novos_dados_cultura["nome"]
+                cultura.id = novos_dados_cultura["id"]
+                cultura.dose_semente = novos_dados_cultura["dose_semente"]
+                cultura.dose_fertilizante = novos_dados_cultura["dose_fertilizante"]
+                cultura.dose_defensivo = novos_dados_cultura["dose_defensivo"]
+                cultura.temp_crescimento = novos_dados_cultura["temp_crescimento"]
+                cultura.num_aplicacao = novos_dados_cultura["num_aplicacao"]
+                self.__tela_cultura.mostra_mensagem_gui("Cultura alterada com sucesso!")
+                self.listar_culturas()
+            else:
+                self.__tela_cultura.mostra_mensagem_gui("ATENCAO: cultura não existente")
+        except ListaVaziaException as e:
+            self.__tela_cultura.mostra_mensagem_gui(str(e))
+        except Exception as e:
+            self.__tela_cultura.mostra_mensagem_gui(f"Erro ao alterar cultura: {str(e)}")
 
     def excluir_cultura(self):
-        self.listar_culturas()
-        cultura = self.pega_cultura_por_id()
+        try:
+            culturas_obj = self.__culturas_DAO.get_all()
+            if not culturas_obj:
+                raise ListaVaziaException("ATENCAO: lista de culturas vazia")
+            
+            culturas = [
+                {"nome": c.nome, "id": c.id, "dose_semente": c.dose_semente, "dose_fertilizante": c.dose_fertilizante,
+                 "dose_defensivo": c.dose_defensivo, "temp_crescimento": c.temp_crescimento, "num_aplicacao": c.num_aplicacao}
+                for c in culturas_obj
+            ]
+            id_cultura = self.__tela_cultura.seleciona_cultura_gui(culturas)
+            if id_cultura is None:
+                return
 
-        if (cultura is not None):
-            self.__culturas_DAO.remove(cultura)
-            self.listar_culturas()
-        else:
-            self.__tela_cultura.mostra_mensagem("ATENCAO: cultura não existente")
+            cultura = next((c for c in self.__culturas_DAO.get_all() if c.id == id_cultura), None)
 
-    def excluir_cultura_gui(self):
-        culturas = [
-            {"nome": c.nome, "id": c.id, "dose_semente": c.dose_semente, "dose_fertilizante": c.dose_fertilizante,
-             "dose_defensivo": c.dose_defensivo, "temp_crescimento": c.temp_crescimento, "num_aplicacao": c.num_aplicacao}
-            for c in self.__culturas_DAO.get_all()
-        ]
-        id_cultura = self.__tela_cultura.seleciona_cultura_gui(culturas)
-        if id_cultura is None:
-            return
-        cultura = next((c for c in self.__culturas_DAO.get_all() if c.id == id_cultura), None)
-        if cultura is not None:
-            self.__culturas_DAO.remove(cultura)
-            self.__tela_cultura.mostra_mensagem_gui("Cultura excluída com sucesso!")
-            self.listar_culturas_gui()
-        else:
-            self.__tela_cultura.mostra_mensagem_gui("ATENCAO: cultura não existente")
+            if cultura is not None:
+                self.__culturas_DAO.remove(id_cultura)  # Passa o ID, não o objeto
+                self.__tela_cultura.mostra_mensagem_gui("Cultura excluída com sucesso!")
+                self.listar_culturas()
+            else:
+                self.__tela_cultura.mostra_mensagem_gui("ATENCAO: cultura não existente")
+        except ListaVaziaException as e:
+            self.__tela_cultura.mostra_mensagem_gui(str(e))
+        except Exception as e:
+            self.__tela_cultura.mostra_mensagem_gui(f"Erro ao excluir cultura: {str(e)}")
 
     def retornar(self):
         self.__controlador_sistema.abre_tela()
 
     def abre_tela(self):
-        lista_opcoes = {1: self.incluir_cultura_gui,
-                        2: self.alterar_cultura_gui,
-                        3: self.listar_culturas_gui,
-                        4: self.excluir_cultura_gui,
+        lista_opcoes = {1: self.incluir_cultura,
+                        2: self.alterar_cultura,
+                        3: self.listar_culturas,
+                        4: self.excluir_cultura,
                         0: self.retornar}
 
         continua = True
         while continua:
-            lista_opcoes[self.__tela_cultura.tela_opcoes_gui()]()
+            try:
+                opcao = self.__tela_cultura.tela_opcoes_gui()
+                if opcao not in lista_opcoes:
+                    raise OpcaoNaoExistenteException()
+                lista_opcoes[opcao]()
+            except OpcaoNaoExistenteException as e:
+                self.__tela_cultura.mostra_mensagem_gui(str(e))
+            except Exception as e:
+                self.__tela_cultura.mostra_mensagem_gui(f"Erro inesperado: {str(e)}")
 
     def get_tela_cultura(self):
         return self.__tela_cultura

@@ -73,15 +73,18 @@ class TelaCultura(TelaBase):
 
     def pega_dados_cultura_gui(self) -> dict:
         layout = [
-            [sg.Text("DADOS DA CULTURA", font=("Arial", 14, "bold"))],
-            [sg.Text("Nome:"), sg.Input(key="-NOME-")],
-            [sg.Text("ID:"), sg.Input(key="-ID-")],
-            [sg.Text("Dose de Semente:"), sg.Input(key="-DOSE_SEMENTE-")],
-            [sg.Text("Dose de Fertilizante:"), sg.Input(key="-DOSE_FERTILIZANTE-")],
-            [sg.Text("Dose de Defensivo:"), sg.Input(key="-DOSE_DEFENSIVO-")],
-            [sg.Text("Tempo de Crescimento (meses):"), sg.Input(key="-TEMP_CRESCIMENTO-")],
-            [sg.Text("Numero de Aplicações:"), sg.Input(key="-NUM_APLICACAO-")],
-            [sg.Button("Confirmar", key="-CONFIRMAR-"), sg.Button("Cancelar", key="-CANCELAR-")]
+            [sg.Text("DADOS DA CULTURA", font=("Arial", 16, "bold"), justification="center", expand_x=True)],
+            [sg.HorizontalSeparator()],
+            [sg.Text("Nome:", size=(20, 1)), sg.Input(key="-NOME-", size=(30, 1)), sg.Push(), sg.Text("*", text_color="red")],
+            [sg.Text("ID:", size=(20, 1)), sg.Input(key="-ID-", size=(10, 1)), sg.Push(), sg.Text("*", text_color="red")],
+            [sg.Text("Dose de Semente:", size=(20, 1)), sg.Input(key="-DOSE_SEMENTE-", size=(10, 1)), sg.Push(), sg.Text("*", text_color="red")],
+            [sg.Text("Dose de Fertilizante:", size=(20, 1)), sg.Input(key="-DOSE_FERTILIZANTE-", size=(10, 1)), sg.Push(), sg.Text("*", text_color="red")],
+            [sg.Text("Dose de Defensivo:", size=(20, 1)), sg.Input(key="-DOSE_DEFENSIVO-", size=(10, 1)), sg.Push(), sg.Text("*", text_color="red")],
+            [sg.Text("Tempo de Crescimento (meses):", size=(20, 1)), sg.Input(key="-TEMP_CRESCIMENTO-", size=(10, 1)), sg.Push(), sg.Text("*", text_color="red")],
+            [sg.Text("Numero de Aplicações:", size=(20, 1)), sg.Input(key="-NUM_APLICACAO-", size=(10, 1)), sg.Push(), sg.Text("*", text_color="red")],
+            [sg.HorizontalSeparator()],
+            [sg.Push(), sg.Button("Confirmar", key="-CONFIRMAR-", size=(12, 1), button_color=("white", "#00796B")),
+             sg.Button("Cancelar", key="-CANCELAR-", size=(12, 1), button_color=("white", "#B71C1C")), sg.Push()]
         ]
         window = get_janela("Dados da Cultura", layout)
         dados = None
@@ -158,14 +161,35 @@ class TelaCultura(TelaBase):
         if not culturas:
             sg.popup("Nenhuma cultura encontrada. Retornando...")
             return
-        linhas = []
-        for cultura in culturas:
-            linhas.append(
-                f"Nome: {cultura['nome']}, ID: {cultura['id']}\nDose de Semente: {cultura['dose_semente']}, "
-                f"Dose de Fertilizante: {cultura['dose_fertilizante']}, Dose de Defensivo: {cultura['dose_defensivo']}\n"
-                f"Tempo de Crescimento: {cultura['temp_crescimento']}, Numero de Aplicações: {cultura['num_aplicacao']}"
-            )
-        layout = get_layout_listagem("Culturas", linhas, "Retornar")
+        
+        layout = [
+            [sg.Text("LISTAGEM DE CULTURAS", font=("Arial", 16, "bold"), justification="center", expand_x=True, text_color="#2E7D32")],
+            [sg.HorizontalSeparator()]
+        ]
+        
+        # Lista simples e organizada
+        for i, cultura in enumerate(culturas):
+            
+            cultura_info = [
+                [sg.Frame("", [
+                    [sg.Text(f"🌱 {cultura['nome']}", font=("Arial", 12, "bold"), text_color="#2E7D32"),
+                     sg.Push(), 
+                     sg.Text(f"ID: {cultura['id']}", font=("Arial", 10), text_color="#666666")],
+                    [sg.Text(f"Dose de Semente: {cultura['dose_semente']:.2f} kg/ha", font=("Arial", 10))],
+                    [sg.Text(f"Dose de Fertilizante: {cultura['dose_fertilizante']:.2f} kg/ha", font=("Arial", 10))],
+                    [sg.Text(f"Dose de Defensivo: {cultura['dose_defensivo']:.2f} L/ha", font=("Arial", 10))],
+                    [sg.Text(f"Tempo de Crescimento: {cultura['temp_crescimento']} meses", font=("Arial", 10))],
+                    [sg.Text(f"Número de Aplicações: {cultura['num_aplicacao']}x", font=("Arial", 10))]
+                ], border_width=1, relief=sg.RELIEF_FLAT, expand_x=True)]
+            ]
+            
+            layout.extend(cultura_info)
+        
+        layout.extend([
+            [sg.HorizontalSeparator()],
+            [sg.Push(), sg.Button("Retornar", size=(12, 1), button_color=("white", "#4CAF50")), sg.Push()]
+        ])
+        
         window = get_janela("Culturas", layout)
         window.read()
         window.close()

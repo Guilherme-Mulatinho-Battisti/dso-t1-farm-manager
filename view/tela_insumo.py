@@ -3,28 +3,6 @@ import FreeSimpleGUI as sg
 
 
 class TelaInsumo(TelaBase):
-    def tela_opcoes(self):
-        print("\n")
-        while True:
-            print("-------- INSUMOS ----------")
-            print("Escolha a opcao")
-            print("1 - Incluir Insumo")
-            print("2 - Alterar Insumo")
-            print("3 - Listar Insumo")
-            print("4 - Excluir Insumo")
-            print("0 - Retornar")
-
-            entrada = input("Escolha a opcao: ")
-
-            # Verifica se a entrada é um número e se está dentro do intervalo esperado
-            try:
-                opcao = int(entrada)
-                if opcao in [0, 1, 2, 3, 4]:
-                    return opcao
-                else:
-                    print("Opção inválida. Digite um número de 0 a 4.\n")
-            except ValueError:
-                print("Entrada inválida. Digite apenas números.\n")
 
     def tela_opcoes_gui(self):
         window, opcao = None, None
@@ -61,26 +39,6 @@ class TelaInsumo(TelaBase):
 
         return opcao
 
-    def tela_opcoes_insumos(self):
-        print("\n")
-        while True:
-            print("-------- TIPOS DE INSUMO ----------")
-            print("1 - Fertilizante")
-            print("2 - Defensivo")
-            print("3 - Semente")
-            print("4 - Implemento")
-            print("0 - Retornar")
-
-            entrada = input("Escolha a opcao: ")
-            # Verifica se a entrada é um número e se está dentro do intervalo esperado
-            try:
-                opcao = int(entrada)
-                if opcao in [0, 1, 2, 3, 4]:
-                    return opcao
-                else:
-                    print("Opção inválida. Digite um número de 0 a 4.\n")
-            except ValueError:
-                print("Entrada inválida. Digite apenas números.\n")
 
     def tela_opcoes_insumos_gui(self):
         window, opcao = None, None
@@ -116,100 +74,6 @@ class TelaInsumo(TelaBase):
 
         return opcao
 
-    def pega_dados_insumo(self, tipo_insumo=None):
-        print("-------- DADOS DO INSUMO ----------")
-        while True:
-            nome = input("Nome: ").strip()
-            if nome:
-                break
-            print("Nome não pode ser vazio.")
-
-        while True:
-            id = input("ID: ").strip()
-            if not id:
-                print("Id não pode ser vazio.")
-                continue
-            if not id.isdigit():
-                print("Id deve ser um número inteiro.")
-                continue
-            id = int(id)
-            break
-
-        while True:
-            valor = input("Valor: ").strip()
-            if not valor:
-                print("Valor não pode ser vazio.")
-                continue
-            if not isinstance(valor, (int, float)):
-                print("Valor deve ser um número float.")
-                continue
-            valor = float(valor)
-            break
-
-        # FERTILIZANTES
-        if tipo_insumo == 1:
-            while True:
-                fonte = input("Fonte (Organico ou Quimico): ").strip()
-                if fonte:
-                    break
-                print("Fonte não pode ser vazio.")
-            return {"nome": nome, "id": id, "valor": valor, "fonte": fonte}
-
-        # DEFENSIVOS
-        if tipo_insumo == 2:
-            while True:
-                funcao = input(
-                    "Função (Herbicida, Fungicida, Inseticida ou Acaricida): "
-                ).strip()
-                if funcao:
-                    break
-                print("Funcao não pode ser vazio.")
-            return {"nome": nome, "id": id, "valor": valor, "funcao": funcao}
-
-        # SEMENTES
-        if tipo_insumo == 3:
-            while True:
-                cultura = input("Cultura (Soja, Milho, Trigo ou Algodão): ").strip()
-                if cultura:
-                    break
-                print("cultura não pode ser vazio.")
-            while True:
-                tecnologia = input(
-                    "Tecnologia (Transgenica ou Nao Transgenica): "
-                ).strip()
-                if tecnologia:
-                    break
-                print("Tecnologia não pode ser vazio.")
-            return {
-                "nome": nome,
-                "id": id,
-                "valor": valor,
-                "cultura": cultura,
-                "tecnologia": tecnologia,
-            }
-
-        # IMPLEMENTOS
-        if tipo_insumo == 4:
-            while True:
-                processo = input("Processo (Pantio ou Colheita): ").strip()
-                if processo:
-                    break
-                print("Processo não pode ser vazio.")
-            while True:
-                tipo = input("Tipo (Manual ou Mecanico): ").strip()
-                if tipo:
-                    break
-                print("Tipo não pode ser vazio.")
-            return {
-                "nome": nome,
-                "id": id,
-                "valor": valor,
-                "processo": processo,
-                "tipo": tipo,
-            }
-
-        return None
-
     def mostra_insumo_gui(self, dados_insumo: list) -> None:
         linhas = []
 
@@ -234,40 +98,43 @@ class TelaInsumo(TelaBase):
         try:
             # Campos comuns para todos os tipos de insumo
             layout_comum = [
-                [sg.Text("DADOS DO INSUMO", font=("Arial", 14, "bold"))],
-                [sg.Text("Nome:"), sg.Input(key="-NOME-", size=(30, 1))],
-                [sg.Text("ID:"), sg.Input(key="-ID-", size=(10, 1))],
-                [sg.Text("Valor:"), sg.Input(key="-VALOR-", size=(15, 1))],
+                [sg.Text("DADOS DO INSUMO", font=("Arial", 16, "bold"), justification="center", expand_x=True)],
+                [sg.HorizontalSeparator()],
+                [sg.Text("Nome:", size=(12, 1)), sg.Input(key="-NOME-", size=(30, 1)), sg.Push(), sg.Text("*", text_color="red")],
+                [sg.Text("ID:", size=(12, 1)), sg.Input(key="-ID-", size=(10, 1)), sg.Push(), sg.Text("*", text_color="red")],
+                [sg.Text("Valor:", size=(12, 1)), sg.Input(key="-VALOR-", size=(15, 1)), sg.Push(), sg.Text("*", text_color="red")],
             ]
 
             layout_especifico = []
 
             if tipo_insumo == 1:  # FERTILIZANTES
                 layout_especifico = [
-                    [sg.Text("Fonte:"), sg.Combo(["Organico", "Quimico"], key="-FONTE-", size=(20, 1))]
+                    [sg.Text("Fonte:", size=(12, 1)), sg.Combo(["Organico", "Quimico"], key="-FONTE-", size=(20, 1)), sg.Push(), sg.Text("*", text_color="red")]
                 ]
             elif tipo_insumo == 2:  # DEFENSIVOS
                 layout_especifico = [
-                    [sg.Text("Função:"), sg.Combo(["Herbicida", "Fungicida", "Inseticida", "Acaricida"],
-                                                  key="-FUNCAO-", size=(20, 1))]
+                    [sg.Text("Função:", size=(12, 1)), sg.Combo(["Herbicida", "Fungicida", "Inseticida", "Acaricida"],
+                                                      key="-FUNCAO-", size=(20, 1)), sg.Push(), sg.Text("*", text_color="red")]
                 ]
             elif tipo_insumo == 3:  # SEMENTES
                 layout_especifico = [
-                    [sg.Text("Cultura:"), sg.Combo(["Soja", "Milho", "Trigo", "Algodão"],
-                                                   key="-CULTURA-", size=(20, 1))],
-                    [sg.Text("Tecnologia:"), sg.Combo(["Transgenica", "Nao Transgenica"],
-                                                      key="-TECNOLOGIA-", size=(20, 1))]
+                    [sg.Text("Cultura:", size=(12, 1)), sg.Combo(["Soja", "Milho", "Trigo", "Algodão"],
+                                                   key="-CULTURA-", size=(20, 1)), sg.Push(), sg.Text("*", text_color="red")],
+                    [sg.Text("Tecnologia:", size=(12, 1)), sg.Combo(["Transgenica", "Nao Transgenica"],
+                                                      key="-TECNOLOGIA-", size=(20, 1)), sg.Push(), sg.Text("*", text_color="red")]
                 ]
             elif tipo_insumo == 4:  # IMPLEMENTOS
                 layout_especifico = [
-                    [sg.Text("Processo:"), sg.Combo(["Plantio", "Colheita"],
-                                                    key="-PROCESSO-", size=(20, 1))],
-                    [sg.Text("Tipo:"), sg.Combo(["Manual", "Mecanico"],
-                                                key="-TIPO-", size=(20, 1))]
+                    [sg.Text("Processo:", size=(12, 1)), sg.Combo(["Plantio", "Colheita"],
+                                                    key="-PROCESSO-", size=(20, 1)), sg.Push(), sg.Text("*", text_color="red")],
+                    [sg.Text("Tipo:", size=(12, 1)), sg.Combo(["Manual", "Mecanico"],
+                                                key="-TIPO-", size=(20, 1)), sg.Push(), sg.Text("*", text_color="red")]
                 ]
 
             layout = layout_comum + layout_especifico + [
-                [sg.Button("Confirmar", key="-CONFIRMAR-"), sg.Button("Cancelar", key="-CANCELAR-")]
+                [sg.HorizontalSeparator()],
+                [sg.Push(), sg.Button("Confirmar", key="-CONFIRMAR-", size=(12, 1), button_color=("white", "#00796B")),
+                 sg.Button("Cancelar", key="-CANCELAR-", size=(12, 1), button_color=("white", "#B71C1C")), sg.Push()]
             ]
 
             window = get_janela("Dados do Insumo", layout)

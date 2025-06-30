@@ -132,26 +132,89 @@ class TelaPorto(TelaBase):
             "cidade": cidade.strip(),
         }
 
+    def pega_dados_porto_gui(self) -> dict:
+        layout = [
+            [sg.Text("DADOS DO PORTO", font=("Arial", 14, "bold"))],
+            [sg.Text("Nome:"), sg.Input(key="-NOME-")],
+            [sg.Text("ID:"), sg.Input(key="-ID-")],
+            [sg.Text("País:"), sg.Input(key="-PAIS-")],
+            [sg.Text("Estado:"), sg.Input(key="-ESTADO-")],
+            [sg.Text("Cidade:"), sg.Input(key="-CIDADE-")],
+            [sg.Button("Confirmar", key="-CONFIRMAR-"), sg.Button("Cancelar", key="-CANCELAR-")]
+        ]
+        window = get_janela("Dados do Porto", layout)
+        dados = None
+        while True:
+            event, values = window.read()
+            if event in (sg.WIN_CLOSED, "-CANCELAR-"):
+                break
+            if event == "-CONFIRMAR-":
+                if not values["-NOME-"] or not values["-ID-"]:
+                    sg.popup_error("Nome e ID são obrigatórios!")
+                    continue
+                try:
+                    dados = {
+                        "nome": values["-NOME-"],
+                        "id": int(values["-ID-"]),
+                        "pais": values["-PAIS-"],
+                        "estado": values["-ESTADO-"],
+                        "cidade": values["-CIDADE-"]
+                    }
+                except Exception:
+                    sg.popup_error("Preencha todos os campos corretamente!")
+                    continue
+                break
+        window.close()
+        return dados
+
     def mostra_porto(self, dados_porto: dict) -> None:
         print("Nome da Porto: ", dados_porto["nome"])
         print("Endereço: ", dados_porto["endereco"])
         print("Estoque: ", dados_porto["estoque"])
         print("\n")
 
-    def mostra_portos_gui(self, portos: dict) -> None:
+    def mostra_portos_gui(self, portos: list) -> None:
         if not portos:
             sg.popup("Nenhum porto cadastrado.")
             return
-
         layout = get_layout_listagem(
             "Portos",
-            [f"Nome: {porto['nome']}\nEndereço: {porto['endereco']}\nEstoque: {porto['estoque']}" for porto in portos],
+            [f"Nome: {porto['nome']}\nID: {porto.get('id', '')}\nEndereço: {porto['endereco']}\nEstoque: {porto['estoque']}" for porto in portos],
             "Retornar"
         )
-
         window = get_janela("Portos", layout)
         window.read()
         window.close()
 
+    def seleciona_porto_gui(self, portos: list) -> int:
+        if not portos:
+            sg.popup("Nenhum porto cadastrado. Retornando...")
+            return None
+        layout = [[sg.Text("Selecione o porto desejado:", font=("Arial", 14, "bold"))]]
+        for porto in portos:
+            texto = f"ID: {porto['id']} | Nome: {porto['nome']}"
+            layout.append([
+                sg.Text(texto, size=(40, 1)),
+                sg.Button("Selecionar", key=f"-SEL-{porto['id']}-")
+            ])
+        layout.append([sg.Button("Cancelar", key="-CANCELAR-")])
+        window = get_janela("Selecionar Porto", layout)
+        id_porto = None
+        while True:
+            event, values = window.read()
+            if event in (sg.WIN_CLOSED, "-CANCELAR-"):
+                break
+            for porto in portos:
+                if event == f"-SEL-{porto['id']}-":
+                    id_porto = porto['id']
+                    break
+            if id_porto is not None:
+                break
+        window.close()
+        return id_porto
+
     def mostra_mensagem(self, msg) -> None:
         print(msg)
+
+    def mostra_mensagem_gui(self, msg):
+        sg.popup(msg, title="Mensagem", keep_on_top=True)

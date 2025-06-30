@@ -77,7 +77,7 @@ class TelaEstoque:
             return
 
         layout = get_layout_listagem(
-            titulo="Produtos no Estoque - ID: " + estoque["id"],
+            titulo="Produtos no Estoque - ID: " + str(estoque["id"]),  # Convert "id" to string
             lista_itens=
             [f"Produto: {produto} | Quantidade: {quantidade}" for produto, quantidade in estoque["estoque"].items()],
             opcao_retorno="Retornar"
@@ -86,10 +86,6 @@ class TelaEstoque:
         window = get_janela("Estoque", layout)
         window.read()
         window.close()
-
-    def seleciona_produto(self, estoque: dict) -> str:
-        produto = input("Digite o nome do produto que deseja alterar: ").strip()
-        return produto
 
     def opcao_alteracao(self) -> int:
         print("\nO que deseja alterar?")
@@ -121,3 +117,100 @@ class TelaEstoque:
 
     def mostra_mensagem(self, msg: str):
         print(f"\n{msg}\n")
+
+    def pega_novo_nome_gui(self) -> str:
+        layout = [
+            [sg.Text("Digite o novo nome do produto:")],
+            [sg.Input(key="-NOVO_NOME-")],
+            [sg.Button("Confirmar", key="-CONFIRMAR-"), sg.Button("Cancelar", key="-CANCELAR-")]
+        ]
+        window = get_janela("Novo Nome do Produto", layout)
+        novo_nome = None
+        while True:
+            event, values = window.read()
+            if event in (sg.WIN_CLOSED, "-CANCELAR-"):
+                break
+            if event == "-CONFIRMAR-":
+                nome = values["-NOVO_NOME-"].strip()
+                if not nome:
+                    sg.popup_error("O nome não pode ser vazio!")
+                    continue
+                novo_nome = nome
+                break
+        window.close()
+        return novo_nome
+
+    def pega_nova_quantidade_gui(self) -> int:
+        layout = [
+            [sg.Text("Digite a nova quantidade:")],
+            [sg.Input(key="-NOVA_QTD-")],
+            [sg.Button("Confirmar", key="-CONFIRMAR-"), sg.Button("Cancelar", key="-CANCELAR-")]
+        ]
+        window = get_janela("Nova Quantidade", layout)
+        quantidade = None
+        while True:
+            event, values = window.read()
+            if event in (sg.WIN_CLOSED, "-CANCELAR-"):
+                break
+            if event == "-CONFIRMAR-":
+                qtd = values["-NOVA_QTD-"].strip()
+                if not qtd:
+                    sg.popup_error("A quantidade não pode ser vazia!")
+                    continue
+                try:
+                    quantidade = int(qtd)
+                except ValueError:
+                    sg.popup_error("Digite um número inteiro válido!")
+                    continue
+                break
+        window.close()
+        return quantidade
+
+    def mostra_mensagem_gui(self, msg: str):
+        sg.popup(msg, title="Mensagem", keep_on_top=True)
+
+    def opcao_alteracao_gui(self) -> int:
+        layout = [
+            [sg.Text("O que deseja alterar?")],
+            [sg.Button("Nome do produto", key="-NOME-"), sg.Button("Quantidade", key="-QTD-")],
+            [sg.Button("Cancelar", key="-CANCELAR-")]
+        ]
+        window = get_janela("Alterar Estoque", layout)
+        opcao = 0
+        while True:
+            event, values = window.read()
+            if event in (sg.WIN_CLOSED, "-CANCELAR-"):
+                break
+            if event == "-NOME-":
+                opcao = 1
+                break
+            if event == "-QTD-":
+                opcao = 2
+                break
+        window.close()
+        return opcao
+
+    def seleciona_item_lista_gui(self, lista, titulo="Selecione um item", texto_btn="Selecionar"):
+        import FreeSimpleGUI as sg
+        if not lista:
+            sg.popup("Lista vazia.", title="Aviso", keep_on_top=True)
+            return None
+        layout = [
+            [sg.Listbox(values=lista, size=(40, min(10, len(lista))), key="-ITEM-", select_mode=sg.LISTBOX_SELECT_MODE_SINGLE)],
+            [sg.Button(texto_btn, key="-SELECIONAR-"), sg.Button("Cancelar", key="-CANCELAR-")]
+        ]
+        window = get_janela(titulo, layout)
+        item_selecionado = None
+        while True:
+            event, values = window.read()
+            if event in (sg.WIN_CLOSED, "-CANCELAR-"):
+                break
+            if event == "-SELECIONAR-":
+                selecionados = values["-ITEM-"]
+                if selecionados:
+                    item_selecionado = selecionados[0]
+                    break
+                else:
+                    sg.popup_error("Selecione um item da lista!")
+        window.close()
+        return item_selecionado
